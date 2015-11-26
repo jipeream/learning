@@ -1,10 +1,10 @@
-package es.jperea.learning;
+package com.fs.fsnews.main;
 
 import es.jperea.kafka.KfkConsumerGroup;
 
 import java.util.Properties;
 
-public class LearningKafka {
+public class FsnKafkaConsumerMain {
     public static void main(String[] args) throws Exception {
         testConsumer();
     }
@@ -16,7 +16,7 @@ public class LearningKafka {
     private final static int numThreads = 1;
     private final static String groupId = "testGroupId";
 
-    private static Properties getProperties() {
+    private static Properties createProperties() {
         Properties properties = new Properties();
         properties.put("zookeeper.connect", zookeeperConnect);
         properties.put("group.id", groupId);
@@ -30,7 +30,7 @@ public class LearningKafka {
     /**/
 
     private static void testConsumer() throws Exception {
-        KfkConsumerGroup kfkConsumerGroup = new KfkConsumerGroup(getProperties(), topic) {
+        KfkConsumerGroup kfkConsumerGroup = new KfkConsumerGroup(createProperties(), topic) {
             @Override
             protected void onMessageConsumed(byte[] message) {
                 System.out.println(new String(message));

@@ -1,4 +1,4 @@
-package es.jperea.learning;
+package com.fs.fsnews.main;
 
 import es.jperea.neo4j.twitter.NeoTwDb;
 import es.jperea.twitter.model.TwStatus;
@@ -14,7 +14,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-public class LearningNeoTw {
+public class FsnNeoTwMain {
 
     public static final String NEO4J_DATABASE_DIR = "A:/fsinsights-learning/db/";
     public static final String SAMPLE_TWITTER_DIR = "./sample/twitter/";
@@ -85,7 +85,7 @@ public class LearningNeoTw {
 
         NeoTwDb neoTwDb = new NeoTwDb(graphDb);
 
-        // LearningNeo4j.test(graphDb);
+        // FsnNeo4jMain.test(graphDb);
 
         neoTwDb.createConstraints();
 

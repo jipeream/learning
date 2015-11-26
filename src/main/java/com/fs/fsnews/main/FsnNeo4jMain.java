@@ -1,11 +1,11 @@
-package es.jperea.learning;
+package com.fs.fsnews.main;
 
 import org.neo4j.graphdb.*;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 
 import java.io.File;
 
-public class LearningNeo4j {
+public class FsnNeo4jMain {
     private static enum RelTypes implements RelationshipType {
         KNOWS
     }
@@ -40,7 +40,7 @@ public class LearningNeo4j {
 
         // registerShutdownHook( graphDb );
 
-        LearningNeo4j.test(graphDb);
+        FsnNeo4jMain.test(graphDb);
 
         graphDb.shutdown();
     }
