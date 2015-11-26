@@ -1,0 +1,12 @@
+RSS (Rss)
+=========
+Módulo genérico, debe estar preparado para otras aplicaciones.
+
+TWITTER (Tw)
+============
+Módulo genérico, debe estar preparado para otras aplicaciones.
+
+FSNEWS (Fsn)
+============
+Es el módulo de nuestra prueba de concepto.
+

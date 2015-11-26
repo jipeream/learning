@@ -1,0 +1,67 @@
+RSS
+===
+
+RssChannelReader
+----------------
+Alternativa a)
+Entrada: Ninguna.
+Procesamiento: Lee uno (o varios) canales cada cierto tiempo.
+Almacenamiento: No almacena en BD.
+Salida: Un RssSnapshot por cada lectura.
+
+Alternativa b)
+Entrada: Un comando que le indica que lea un canal.
+Procesamiento: Lee un canal.
+Almacenamiento: Actualiza la información del canal (¿?).
+Salida: Un RssSnapshot.
+
+Alternativa a2) y b2)
+Salida: Cada RssItem
+Info: No es necesario RssSnapshotProcessor
+
+RssSnapshotProcessor
+--------------------
+Alternativa a)
+Entrada: Recibe un RssSnapshot.
+Procesamiento: Compara los items con los que ya están en BD.
+Almacenamiento: Almacena los nuevos items en BD.
+Salida: Cada nuevo RssItem.
+Info: No es necesario RssItemProcessor
+
+Alternativa b)
+Entrada: Recibe un RssSnapshot.
+Procesamiento: Separa los items.
+Almacenamiento: No almacena en BD.
+Salida: Cada RssItem, nuevo o no.
+
+RssItemProcessor
+----------------
+Entrada: Recibe un RssNewItem.
+Procesamiento: Comprueba si el RssItem es nuevo o no.
+Almacenamiento: Los nuevos RssItems, estructurados.
+Salida: Cada nuevo RssItem.
+
+TWITTER
+=======
+
+TwStreamReader
+--------------
+Entrada: Ninguna.
+Procesamiento: Lee un stream de twitter de forma continua.
+Almacenamiento:
+Salida: Cada nuevo status (twit).
+
+TwStatusProcessor
+-----------------
+Entrada: Un TwStatus
+
+NEWS
+====
+
+NewsRssItemProcessor
+--------------------
+Entrada: Recibe los nuevos RssItems.
+Procesamiento:
+Almacenamiento:
+Salida:
+

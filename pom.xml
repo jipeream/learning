@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.fs.jperea</groupId>
+    <artifactId>fsinsights-learning</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <!--<version>20150729</version>-->
+            <!--<version>20141113</version>-->
+            <version>20090211</version>
+        </dependency>
+
+        <!--twitter-hbc-twitter4j-->
+
+        <!--<dependency>-->
+            <!--<groupId>com.twitter</groupId>-->
+            <!--<artifactId>hbc-core</artifactId>-->
+            <!--<version>2.2.0</version>-->
+        <!--</dependency>-->
+
+        <dependency>
+            <groupId>com.twitter</groupId>
+            <artifactId>hbc-twitter4j</artifactId>
+            <version>2.2.0</version>
+        </dependency>
+
+        <!--kafka-->
+
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka_2.10</artifactId>
+            <version>0.8.2.2</version>
+            <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <artifactId>jmxri</artifactId>
+                    <groupId>com.sun.jmx</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>jms</artifactId>
+                    <groupId>javax.jms</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>jmxtools</artifactId>
+                    <groupId>com.sun.jdmk</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <!--<dependency>-->
+        <!--<groupId>org.apache.kafka</groupId>-->
+        <!--<artifactId>kafka-clients</artifactId>-->
+        <!--<version>0.8.2.0</version>-->
+        <!--</dependency>-->
+
+        <!--neo4j-->
+
+        <dependency>
+            <groupId>org.neo4j</groupId>
+            <artifactId>neo4j</artifactId>
+            <version>2.3.0</version>
+        </dependency>
+
+        <!--blueprints 2.6.0-->
+
+        <dependency>
+            <groupId>com.tinkerpop.blueprints</groupId>
+            <artifactId>blueprints-core</artifactId>
+            <version>2.6.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.tinkerpop.blueprints</groupId>
+            <artifactId>blueprints-neo4j-graph</artifactId>
+            <version>2.6.0</version>
+        </dependency>
+
+        <!--storm-->
+
+        <!--<dependency>-->
+        <!--<groupId>org.apache.storm</groupId>-->
+        <!--<artifactId>storm-kafka</artifactId>-->
+        <!--<version>0.9.5</version>-->
+        <!--</dependency>-->
+
+        <!--flink-->
+
+        <!--<dependency>-->
+            <!--<groupId>org.apache.flink</groupId>-->
+            <!--<artifactId>flink-java</artifactId>-->
+            <!--<version>1.0-SNAPSHOT</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>org.apache.flink</groupId>-->
+            <!--<artifactId>flink-clients</artifactId>-->
+            <!--<version>1.0-SNAPSHOT</version>-->
+        <!--</dependency>-->
+    </dependencies>
+
+</project>

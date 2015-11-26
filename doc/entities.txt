@@ -1,0 +1,87 @@
+RSS
+===
+
+RssChannel
+----------
+Cada canal de RSS, con su URL.
+Almacenamiento: sí
+
+RssSnapshot
+-----------
+Una lectura de un canal de RSS.
+Almacenamiento: no
+
+RssItem
+-------
+Cada una de las entradas de un Rss.
+Almacenamiento: sí
+Relaciones:
+    -publishedIn->RssChannel
+
+RssAuthor
+---------
+
+TWITTER
+=======
+
+TwUser
+------
+Búsqueda por: user_id
+Relaciones:
+    -follows-> TwUser
+
+TwStatus
+--------
+Almacenamiento: sí
+Búsqueda por: status_id
+Relaciones:
+    -publishedBy->TwUser
+    -retweetOf->TwStatus
+    -mentions->TwUser
+    -mentions->TwHashtag
+    -mentions->TwSymbol
+    -mentions->TwMedia
+
+TwUrl
+-----
+Almacenamiento: sí
+Búsqueda por: url, expanded_url
+
+TwHashtag
+---------
+Almacenamiento: sí
+Búsqueda por: text
+
+TwSymbol
+--------
+Almacenamiento: ??
+
+TwMedia
+-------
+Almacenamiento: ??
+
+FS NEWS
+=======
+
+FsnMedio
+--------
+Cada medio. Esta entidad debe ser cargada manualmente.
+Posee diversos canales de RSS. Por ejemplo, El Mundo tiene los canales de Portada, Deportes, etc.
+Posee diversas cuentas de Twitter.
+Almacenamiento: sí
+Relaciones:
+    -owns->RssChannel
+    -owns->TwUser
+
+FsnAutor
+--------
+
+FsnNoticia
+----------
+Cada noticia. Creada a partir de un RssItem como semilla.
+Almacenamiento: sí
+Relaciones:
+    -readIn->FsnUrl
+    -[]->RssItem
+    -[]->TwUrl
+    -references->FsnUrl
