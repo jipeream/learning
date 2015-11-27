@@ -12,28 +12,52 @@ public class HttpUtils {
     public static List<String> shortUrlDomainList = new ArrayList<>();
 
     static {
+        shortUrlDomainList.add("hubs.ly");
+        shortUrlDomainList.add("ow.ly");
+        shortUrlDomainList.add("bit.ly");
+        //
+        shortUrlDomainList.add("1url.com");
+        shortUrlDomainList.add("tinyurl.com");
+        //
+        shortUrlDomainList.add("cort.as");
+        //
+        shortUrlDomainList.add("ww.abc.es");
+        shortUrlDomainList.add("vine.es");
+        shortUrlDomainList.add("besturl.es");
+        //
         shortUrlDomainList.add("t.co");
         shortUrlDomainList.add("goo.gl");
         shortUrlDomainList.add("is.gd");
-        shortUrlDomainList.add("bit.ly");
         shortUrlDomainList.add("amzn.to");
-        shortUrlDomainList.add("tinyurl.com");
-        shortUrlDomainList.add("ow.ly");
         shortUrlDomainList.add("sh.st");
         shortUrlDomainList.add("youtu.be");
     }
 
     public static boolean isShortUrl(URL url) {
         String host = url.getHost();
-        return shortUrlDomainList.contains(host);
+        if (shortUrlDomainList.contains(host)) {
+            return true;
+        }
+        if (host.startsWith("www.")) {
+            return false;
+        }
+        if (host.length() > 11) {
+            return false;
+        }
+        return true;
     }
 
     public static URL getUnshortenedUrl(URL url) throws Exception {
         URL result = url;
-        while (url != null && isShortUrl(url)) {
-            result = url;
+        while (isShortUrl(url)) {
             url = followRedirect(url);
+            if (url != null) {
+                result = url;
+            } else {
+                break;
+            }
         }
+        result = new URL(url.getProtocol(), url.getHost(), url.getPort(), url.getPath());
         return result;
     }
 

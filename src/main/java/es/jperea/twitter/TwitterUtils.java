@@ -1,8 +1,12 @@
 package es.jperea.twitter;
 
+import com.google.common.collect.Lists;
 import com.twitter.hbc.ClientBuilder;
 import com.twitter.hbc.core.Constants;
+import com.twitter.hbc.core.endpoint.StatusesFilterEndpoint;
+import com.twitter.hbc.core.endpoint.StatusesSampleEndpoint;
 import com.twitter.hbc.core.endpoint.StreamingEndpoint;
+import com.twitter.hbc.core.endpoint.UserstreamEndpoint;
 import com.twitter.hbc.core.processor.StringDelimitedProcessor;
 import com.twitter.hbc.httpclient.BasicClient;
 import com.twitter.hbc.httpclient.auth.Authentication;
@@ -21,19 +25,18 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class TwitterUtils {
 
-    public static BasicClient createBasicClient(StreamingEndpoint streamingEndpoint, Authentication authentication, BlockingQueue<String> statusQueue) {
+    public static BasicClient createBasicClient(StreamingEndpoint streamingEndpoint, Authentication authentication, BlockingQueue<String> twQueue) {
         BasicClient basicClient = new ClientBuilder().hosts(Constants.STREAM_HOST)
                 .endpoint(streamingEndpoint).authentication(authentication)
-                .processor(new StringDelimitedProcessor(statusQueue)).build();
+                .processor(new StringDelimitedProcessor(twQueue)).build();
         return basicClient;
     }
 
-    public static Twitter4jStatusClient createTwitter4jStatusClient(StreamingEndpoint streamingEndpoint, Authentication authentication, BlockingQueue<String> statusQueue, List<? extends StatusListener> streamListenerList, ExecutorService executorService) {
+    public static Twitter4jStatusClient createTwitter4jStatusClient(StreamingEndpoint streamingEndpoint, Authentication authentication, BlockingQueue<String> twQueue, List<? extends StatusListener> streamListenerList, ExecutorService executorService) {
         BasicClient basicClient = new ClientBuilder().hosts(Constants.STREAM_HOST)
                 .endpoint(streamingEndpoint).authentication(authentication)
-                .processor(new StringDelimitedProcessor(statusQueue)).build();
-        Twitter4jStatusClient twitter4jStatusClient = new Twitter4jStatusClient(basicClient, statusQueue, streamListenerList, executorService);
-
+                .processor(new StringDelimitedProcessor(twQueue)).build();
+        Twitter4jStatusClient twitter4jStatusClient = new Twitter4jStatusClient(basicClient, twQueue, streamListenerList, executorService);
         return twitter4jStatusClient;
     }
 
@@ -78,13 +81,13 @@ public class TwitterUtils {
         return urlList;
     }
 
-    public interface IStatusJsonStrQueueListener {
+    public interface ITwitterQueueListener {
         void onBeginListening();
         void onEndListening();
         void onStatusJsonStr(String statusJsonStr) throws Exception;
     }
 
-    public static abstract class StatusQueueListener implements IStatusJsonStrQueueListener {
+    public static abstract class TwitterQueueListener implements ITwitterQueueListener {
         @Override
         public void onBeginListening() {
         }
@@ -103,15 +106,19 @@ public class TwitterUtils {
 
     }
 
-    public static Thread createStatusQueueListeningThread(BlockingQueue<String> statusQueue, IStatusJsonStrQueueListener statusQueueListenerCallback) {
+    public static Thread createStatusQueueListeningThread(BlockingQueue<String> twitterQueue, ITwitterQueueListener statusQueueListenerCallback) {
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 statusQueueListenerCallback.onBeginListening();
                 while (true) {
                     try {
-                        String statusJsonStr = statusQueue.take();
-                        statusQueueListenerCallback.onStatusJsonStr(statusJsonStr);
+                        String twitterJsonStr = twitterQueue.take();
+                        if (twitterJsonStr.startsWith("{\"created_at\":")) {
+                            statusQueueListenerCallback.onStatusJsonStr(twitterJsonStr);
+                        } else {
+                            System.err.println(twitterJsonStr);
+                        }
                     } catch (Exception e) {
                         e.printStackTrace(System.err);
                         break;
@@ -121,5 +128,46 @@ public class TwitterUtils {
             }
         });
         return thread;
+    }
+
+    public static StatusesFilterEndpoint createStatusesFilterEndpoint() {
+        StatusesFilterEndpoint statusesFilterEndpoint = new StatusesFilterEndpoint();
+//        statusesFilterEndpoint.delimited(false);
+        return statusesFilterEndpoint;
+    }
+
+    public static StatusesFilterEndpoint createStatusesFilterEndpoint(Long... followedUserIds) {
+        StatusesFilterEndpoint statusesFilterEndpoint = createStatusesFilterEndpoint();
+        setStatusesFilterEndpointFollowedUserIds(statusesFilterEndpoint, followedUserIds);
+        return statusesFilterEndpoint;
+    }
+
+    public static StatusesFilterEndpoint createStatusesFilterEndpoint(String... keywords) {
+        StatusesFilterEndpoint statusesFilterEndpoint = createStatusesFilterEndpoint();
+        setStatusesFilterEndpointTrackedTerms(statusesFilterEndpoint, keywords);
+        return statusesFilterEndpoint;
+    }
+
+    public static void setStatusesFilterEndpointFollowedUserIds(StatusesFilterEndpoint statusesFilterEndpoint, Long... followedUserIds) {
+        statusesFilterEndpoint.followings(Lists.newArrayList(followedUserIds));
+    }
+
+    public static void setStatusesFilterEndpointTrackedTerms(StatusesFilterEndpoint statusesFilterEndpoint, String... trackedTerms) {
+        statusesFilterEndpoint.trackTerms(Lists.newArrayList(trackedTerms));
+    }
+
+    public static UserstreamEndpoint createUserstreamEndpoint() {
+        UserstreamEndpoint userstreamEndpoint = new UserstreamEndpoint();
+//        userstreamEndpoint.delimited(false);
+        userstreamEndpoint.allReplies(true);
+//        userstreamEndpoint.withUser(true);
+        userstreamEndpoint.withFollowings(true);
+        return userstreamEndpoint;
+    }
+
+    public static StatusesSampleEndpoint createStatusesSampleEndpoint() {
+        StatusesSampleEndpoint statusesSampleEndpoint = new StatusesSampleEndpoint();
+//        statusesSampleEndpoint.delimited(false);
+        return statusesSampleEndpoint;
     }
 }

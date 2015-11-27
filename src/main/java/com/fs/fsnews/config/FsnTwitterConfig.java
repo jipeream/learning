@@ -21,23 +21,4 @@ public class FsnTwitterConfig {
 
         return authentication;
     }
-
-    public static StatusesFilterEndpoint createStatusesFilterEndpoint(String... keywords) {
-        StatusesFilterEndpoint statusesFilterEndpoint = new StatusesFilterEndpoint();
-        statusesFilterEndpoint.trackTerms(Lists.newArrayList(keywords));
-        return statusesFilterEndpoint;
-    }
-
-    public static UserstreamEndpoint createUserstreamEndpoint(String user) {
-        UserstreamEndpoint userstreamEndpoint = new UserstreamEndpoint();
-        userstreamEndpoint.allReplies(true);
-        userstreamEndpoint.withUser(true);
-        userstreamEndpoint.withFollowings(true);
-        return userstreamEndpoint;
-    }
-
-    public static StatusesSampleEndpoint createStatusesSampleEndpoint() {
-        StatusesSampleEndpoint statusesSampleEndpoint = new StatusesSampleEndpoint();
-        return statusesSampleEndpoint;
-    }
 }
