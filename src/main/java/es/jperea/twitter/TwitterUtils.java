@@ -7,11 +7,11 @@ import com.twitter.hbc.core.processor.StringDelimitedProcessor;
 import com.twitter.hbc.httpclient.BasicClient;
 import com.twitter.hbc.httpclient.auth.Authentication;
 import com.twitter.hbc.twitter4j.Twitter4jStatusClient;
-import twitter4j.Status;
-import twitter4j.StatusListener;
-import twitter4j.TwitterException;
-import twitter4j.TwitterObjectFactory;
+import es.jperea.http.HttpUtils;
+import twitter4j.*;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
@@ -19,7 +19,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 
-public class TwUtils {
+public class TwitterUtils {
 
     public static BasicClient createBasicClient(StreamingEndpoint streamingEndpoint, Authentication authentication, BlockingQueue<String> statusQueue) {
         BasicClient basicClient = new ClientBuilder().hosts(Constants.STREAM_HOST)
@@ -60,6 +60,22 @@ public class TwUtils {
             streamListenerList.add(statusListener);
         }
         return streamListenerList;
+    }
+
+    public static List<URL> getUrlList(Status status, boolean unshorten) {
+        List<URL> urlList = new ArrayList<>();
+        for (URLEntity urlEntity : status.getURLEntities()) {
+            try {
+                URL url = new URL(urlEntity.getExpandedURL());
+                if (unshorten) {
+                    url = HttpUtils.getUnshortenedUrl(url);
+                }
+                urlList.add(url);
+            } catch (MalformedURLException e) {
+            } catch (Exception e) {
+            }
+        }
+        return urlList;
     }
 
     public interface IStatusJsonStrQueueListener {

@@ -3,6 +3,7 @@ package com.fs.fsnews.config;
 import com.google.common.collect.Lists;
 import com.twitter.hbc.core.endpoint.StatusesFilterEndpoint;
 import com.twitter.hbc.core.endpoint.StatusesSampleEndpoint;
+import com.twitter.hbc.core.endpoint.UserstreamEndpoint;
 import com.twitter.hbc.httpclient.auth.Authentication;
 import com.twitter.hbc.httpclient.auth.OAuth1;
 
@@ -25,6 +26,14 @@ public class FsnTwitterConfig {
         StatusesFilterEndpoint statusesFilterEndpoint = new StatusesFilterEndpoint();
         statusesFilterEndpoint.trackTerms(Lists.newArrayList(keywords));
         return statusesFilterEndpoint;
+    }
+
+    public static UserstreamEndpoint createUserstreamEndpoint(String user) {
+        UserstreamEndpoint userstreamEndpoint = new UserstreamEndpoint();
+        userstreamEndpoint.allReplies(true);
+        userstreamEndpoint.withUser(true);
+        userstreamEndpoint.withFollowings(true);
+        return userstreamEndpoint;
     }
 
     public static StatusesSampleEndpoint createStatusesSampleEndpoint() {
