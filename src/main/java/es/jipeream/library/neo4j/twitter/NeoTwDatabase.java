@@ -1,11 +1,11 @@
-package es.jperea.neo4j.twitter;
+package es.jipeream.library.neo4j.twitter;
 
-import es.jperea.twitter.model.TwStatus;
-import es.jperea.twitter.model.TwUser;
+import es.jipeream.library.twitter.model.TwStatus;
+import es.jipeream.library.twitter.model.TwUser;
 import org.neo4j.graphdb.*;
 
-public class NeoTwDb {
-    public NeoTwDb(GraphDatabaseService graphDb) {
+public class NeoTwDatabase {
+    public NeoTwDatabase(GraphDatabaseService graphDb) {
         this.graphDb = graphDb;
     }
 

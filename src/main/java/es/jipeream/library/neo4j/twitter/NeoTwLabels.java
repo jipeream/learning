@@ -1,4 +1,4 @@
-package es.jperea.neo4j.twitter;
+package es.jipeream.library.neo4j.twitter;
 
 import org.neo4j.graphdb.Label;
 

@@ -1,9 +1,8 @@
-package es.jperea.twitter;
+package es.jipeream.library.twitter;
 
 import twitter4j.StallWarning;
 import twitter4j.Status;
 import twitter4j.StatusDeletionNotice;
-import twitter4j.StatusListener;
 
 public abstract class TwStatusListener implements twitter4j.StatusListener {
     @Override

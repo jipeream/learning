@@ -1,4 +1,4 @@
-package es.jperea.kafka;
+package es.jipeream.library.kafka;
 
 import kafka.consumer.ConsumerConfig;
 import kafka.consumer.ConsumerIterator;

@@ -1,4 +1,4 @@
-package es.jperea.twitter.model;
+package es.jipeream.library.twitter.model;
 
 import org.json.JSONObject;
 

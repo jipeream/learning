@@ -1,4 +1,4 @@
-package es.jperea.http;
+package es.jipeream.library.http;
 
 import java.io.BufferedReader;
 import java.io.InputStream;

@@ -1,11 +1,12 @@
 package com.fs.fsnews.main;
 
+import com.fs.fsnews.config.FsnKafkaConfig;
 import com.sun.syndication.feed.synd.SyndEntry;
 import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.io.SyndFeedInput;
 import com.sun.syndication.io.SyndFeedOutput;
 import com.sun.syndication.io.XmlReader;
-import es.jperea.rss.RssUtils;
+import es.jipeream.library.rss.RssUtils;
 import kafka.javaapi.producer.Producer;
 import kafka.producer.KeyedMessage;
 
@@ -17,31 +18,32 @@ public class FsnRssKafkaMain {
     public static void main(String[] args) throws Exception {
 
         List<String> entryUrlList = new ArrayList<>();
-
+        //
         List<URL> feedUrlList = new ArrayList<>();
-
+        //
         // http://www.elmundo.es/rss/
         feedUrlList.add(new URL("http://estaticos.elmundo.es/elmundo/rss/portada.xml"));
         feedUrlList.add(new URL("http://estaticos.elmundo.es/elmundodeporte/rss/portada.xml"));
-
+        //
         // http://servicios.elpais.com/rss/
         feedUrlList.add(new URL("http://ep00.epimg.net/rss/elpais/portada.xml"));
         feedUrlList.add(new URL("http://ep00.epimg.net/rss/tags/noticias_mas_vistas.xml"));
         feedUrlList.add(new URL("http://ep01.epimg.net/rss/elpais/blogs.xml"));
         feedUrlList.add(new URL("http://ep00.epimg.net/rss/deportes/portada.xml"));
-
+        //
         // http://www.abc.es/rss/
         feedUrlList.add(new URL("http://www.abc.es/rss/feeds/abcPortada.xml"));
         feedUrlList.add(new URL("http://www.abc.es/rss/feeds/abc_ultima.xml"));
         feedUrlList.add(new URL("http://www.abc.es/rss/feeds/blogs-actualidad.xml"));
         feedUrlList.add(new URL("http://www.abc.es/rss/feeds/abc_Deportes.xml"));
-
+        //
         // http://www.la-razon.com/rss.html
         feedUrlList.add(new URL("http://www.la-razon.com/rss/latest/?contentType=NWS"));
-
-//        Producer producer = FsnKafkaConfig.createProducer();
+        //
         Producer producer = null;
-
+//            Producer producer = FsnKafkaConfig.createLocalhostProducer();
+//            Producer producer = FsnKafkaConfig.createPreproProducer();
+        //
         while (true) {
             SyndFeedOutput syndFeedOutput = new SyndFeedOutput();
 
@@ -71,7 +73,7 @@ public class FsnRssKafkaMain {
                     }
                     //
                     if (producer != null) {
-                        KeyedMessage<String, String> message = new KeyedMessage("fsinsights", syndFeedOutput.outputString(outputSyndFeed));
+                        KeyedMessage<String, String> message = new KeyedMessage(FsnKafkaConfig.TOPIC_fsinsights_rss, syndFeedOutput.outputString(outputSyndFeed));
                         producer.send(message);
                     }
                 }

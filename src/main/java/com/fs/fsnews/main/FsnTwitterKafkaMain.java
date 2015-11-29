@@ -1,12 +1,13 @@
 package com.fs.fsnews.main;
 
+import com.fs.fsnews.config.FsnKafkaConfig;
 import com.fs.fsnews.config.FsnTwitterConfig;
 import com.twitter.hbc.core.endpoint.StreamingEndpoint;
 import com.twitter.hbc.httpclient.BasicClient;
 import com.twitter.hbc.httpclient.auth.Authentication;
 import com.twitter.hbc.twitter4j.Twitter4jStatusClient;
-import es.jperea.twitter.TwStatusListener;
-import es.jperea.twitter.TwitterUtils;
+import es.jipeream.library.twitter.TwStatusListener;
+import es.jipeream.library.twitter.TwitterUtils;
 import kafka.javaapi.producer.Producer;
 import kafka.producer.KeyedMessage;
 import twitter4j.Status;
@@ -70,8 +71,8 @@ public class FsnTwitterKafkaMain {
             System.out.println("RT @" + retweetedStatus.getUser().getScreenName() + "-" + retweetedStatus.getUser().getId());
         }
         if (producer != null) {
-            KeyedMessage<String, Status> message = new KeyedMessage("fsinsights", status);
-//            KeyedMessage<String, String> message = new KeyedMessage("fsinsights", statusJsonStr);
+            KeyedMessage<String, Status> message = new KeyedMessage(FsnKafkaConfig.TOPIC_fsinsights_twitter, status);
+//            KeyedMessage<String, String> message = new KeyedMessage(FsnKafkaConfig.TOPIC_fsinsights_twitter, statusJsonStr);
             producer.send(message);
         }
     }
@@ -124,7 +125,8 @@ public class FsnTwitterKafkaMain {
 //            streamingEndpointList.add(TwitterUtils.createStatusesSampleEndpoint());
             //
             Producer producer = null;
-//            Producer producer = FsnKafkaConfig.createProducer();
+//            Producer producer = FsnKafkaConfig.createLocalhostProducer();
+//            Producer producer = FsnKafkaConfig.createPreproProducer();
             //
             for (StreamingEndpoint streamingEndpoint : streamingEndpointList) {
                 testTwitter4jClient(streamingEndpoint, producer);

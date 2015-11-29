@@ -1,4 +1,4 @@
-package es.jperea.twitter;
+package es.jipeream.library.twitter;
 
 import com.google.common.collect.Lists;
 import com.twitter.hbc.ClientBuilder;
@@ -11,7 +11,7 @@ import com.twitter.hbc.core.processor.StringDelimitedProcessor;
 import com.twitter.hbc.httpclient.BasicClient;
 import com.twitter.hbc.httpclient.auth.Authentication;
 import com.twitter.hbc.twitter4j.Twitter4jStatusClient;
-import es.jperea.http.HttpUtils;
+import es.jipeream.library.http.HttpUtils;
 import twitter4j.*;
 
 import java.net.MalformedURLException;

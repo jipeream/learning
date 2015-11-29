@@ -1,25 +1,23 @@
 package com.fs.fsnews.main;
 
+import com.fs.fsnews.config.FsnNeo4jConfig;
 import org.neo4j.graphdb.*;
-import org.neo4j.graphdb.factory.GraphDatabaseFactory;
-
-import java.io.File;
 
 public class FsnNeo4jMain {
     private static enum RelTypes implements RelationshipType {
         KNOWS
     }
 
-    public static void test(GraphDatabaseService graphDb) {
+    public static void test(GraphDatabaseService graphDatabaseService) {
         Node firstNode;
         Node secondNode;
         Relationship relationship;
 
-        try (Transaction tx = graphDb.beginTx()) {
+        try (Transaction tx = graphDatabaseService.beginTx()) {
 
-            firstNode = graphDb.createNode();
+            firstNode = graphDatabaseService.createNode();
             firstNode.setProperty("message", "Hello, ");
-            secondNode = graphDb.createNode();
+            secondNode = graphDatabaseService.createNode();
             secondNode.setProperty("message", "World!");
 
             relationship = firstNode.createRelationshipTo(secondNode, RelTypes.KNOWS);
@@ -35,14 +33,13 @@ public class FsnNeo4jMain {
 
 
     public static void main(String[] args) throws Exception {
-        // GraphDatabaseService graphDb = new GraphDatabaseFactory().newEmbeddedDatabase(new File("C:/Users/Juan/Documents/Neo4j/default.graphdb"));
-        GraphDatabaseService graphDb = new GraphDatabaseFactory().newEmbeddedDatabase(new File("./db"));
+        GraphDatabaseService graphDatabaseService = FsnNeo4jConfig.getEmbeddedGraphDatabaseService();
 
-        // registerShutdownHook( graphDb );
+        // registerShutdownHook( graphDatabaseService );
 
-        FsnNeo4jMain.test(graphDb);
+        FsnNeo4jMain.test(graphDatabaseService);
 
-        graphDb.shutdown();
+        graphDatabaseService.shutdown();
     }
 
 }

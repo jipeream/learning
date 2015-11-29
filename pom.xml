@@ -94,19 +94,49 @@
             <version>2.3.0</version>
         </dependency>
 
-        <!--blueprints 2 -->
+        <!--&lt;!&ndash;blueprints 2 &ndash;&gt;-->
+
+        <!--<dependency>-->
+            <!--<groupId>com.tinkerpop.blueprints</groupId>-->
+            <!--<artifactId>blueprints-core</artifactId>-->
+            <!--<version>2.6.0</version>-->
+        <!--</dependency>-->
+
+        <!--<dependency>-->
+            <!--<groupId>com.tinkerpop.blueprints</groupId>-->
+            <!--<artifactId>blueprints-neo4j-graph</artifactId>-->
+            <!--<version>2.6.0</version>-->
+        <!--</dependency>-->
+
+        <!--blueprints 3 -->
 
         <dependency>
-            <groupId>com.tinkerpop.blueprints</groupId>
-            <artifactId>blueprints-core</artifactId>
-            <version>2.6.0</version>
+            <groupId>org.apache.tinkerpop</groupId>
+            <artifactId>gremlin-core</artifactId>
+            <version>3.1.0-incubating</version>
         </dependency>
 
         <dependency>
-            <groupId>com.tinkerpop.blueprints</groupId>
-            <artifactId>blueprints-neo4j-graph</artifactId>
-            <version>2.6.0</version>
+            <groupId>org.apache.tinkerpop</groupId>
+            <artifactId>neo4j-gremlin</artifactId>
+            <version>3.1.0-incubating</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.tinkerpop</groupId>
+            <artifactId>gremlin-groovy</artifactId>
+            <version>3.1.0-incubating</version>
+        </dependency>
+        <dependency>
+            <groupId>org.neo4j</groupId>
+            <artifactId>neo4j-tinkerpop-api-impl</artifactId>
+            <version>0.1-2.2</version>
+        </dependency>
+
+        <!--<dependency>-->
+            <!--<groupId>org.apache.tinkerpop</groupId>-->
+            <!--<artifactId>spark-gremlin</artifactId>-->
+            <!--<version>3.1.0-incubating</version>-->
+        <!--</dependency>-->
 
         <!--storm-->
 

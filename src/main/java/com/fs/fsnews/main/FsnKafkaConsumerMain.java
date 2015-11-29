@@ -1,6 +1,6 @@
 package com.fs.fsnews.main;
 
-import es.jperea.kafka.KfkConsumerGroup;
+import es.jipeream.library.kafka.KfkConsumerGroup;
 
 import java.util.Properties;
 

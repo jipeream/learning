@@ -1,4 +1,4 @@
-package es.jperea.rss;
+package es.jipeream.library.rss;
 
 import com.sun.syndication.feed.synd.SyndEntry;
 
