@@ -40,13 +40,16 @@ public class FsnRssKafkaMain {
         // http://www.la-razon.com/rss.html
         feedUrlList.add(new URL("http://www.la-razon.com/rss/latest/?contentType=NWS"));
         //
+        // http://www.efe.com
+        feedUrlList.add(new URL("http://www.efe.com/efe/espana/1/rss"));
+        //
         Producer producer = null;
 //            Producer producer = FsnKafkaConfig.createLocalhostProducer();
 //            Producer producer = FsnKafkaConfig.createPreproProducer();
         //
         while (true) {
             SyndFeedOutput syndFeedOutput = new SyndFeedOutput();
-
+            //
             for (URL feedUrl : feedUrlList) {
                 SyndFeedInput syndFeedInput = new SyndFeedInput();
                 SyndFeed inputSyndFeed = syndFeedInput.build(new XmlReader(feedUrl));
