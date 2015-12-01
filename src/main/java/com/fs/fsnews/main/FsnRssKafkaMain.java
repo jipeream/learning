@@ -2,6 +2,7 @@ package com.fs.fsnews.main;
 
 import com.fs.fsnews.config.KafkaConfig;
 import com.fs.fsnews.config.FsnRssConfig;
+import com.sun.syndication.feed.synd.SyndContent;
 import com.sun.syndication.feed.synd.SyndEntry;
 import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.io.SyndFeedInput;
@@ -37,7 +38,9 @@ public class FsnRssKafkaMain {
                 SyndFeed inputSyndFeed = syndFeedInput.build(new XmlReader(feedUrl));
                 for (Object entry : inputSyndFeed.getEntries()) {
                     SyndEntry inputSyndEntry = (SyndEntry) entry;
-                    URL entryUrl = new URL(inputSyndEntry.getUri());
+                    String urlStr = inputSyndEntry.getLink();
+                    // System.err.println(urlStr);
+                    URL entryUrl = new URL(urlStr);
                     synchronized (entryUrlList) {
                         if (!entryUrlList.contains(entryUrl.toExternalForm())) {
                             entryUrlList.add(entryUrl.toExternalForm());
@@ -53,8 +56,10 @@ public class FsnRssKafkaMain {
                     //
                     System.out.println(entryUrl.toExternalForm());
 //                    System.out.println(syndFeedOutput.outputString(outputSyndFeed));
-                    System.out.println(outputSyndEntry.getTitle());
-                    System.out.println(outputSyndEntry.getDescription().getValue());
+                    String title = outputSyndEntry.getTitle();
+                    SyndContent description = outputSyndEntry.getDescription();
+                    System.out.println("Title: " + title);
+                    System.out.println("Description: " + (description == null ? "-" : description.getValue().length()));
                     for (String author : RssUtils.getAuthorList(outputSyndEntry)) {
                         System.out.println("@" + author);
                     }
