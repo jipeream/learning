@@ -1,9 +1,6 @@
-package com.fs.fsnews.main;
-
-import com.fs.fsnews.config.FsnNeo4jConfig;
 import org.neo4j.graphdb.*;
 
-public class FsnNeo4jMain {
+public class FsnNeo4jTest {
     private static enum RelTypes implements RelationshipType {
         KNOWS
     }
@@ -33,11 +30,11 @@ public class FsnNeo4jMain {
 
 
     public static void main(String[] args) throws Exception {
-        GraphDatabaseService graphDatabaseService = FsnNeo4jConfig.getEmbeddedGraphDatabaseService();
+        GraphDatabaseService graphDatabaseService = FsnNeo4jConfig.createEmbeddedGraphDatabaseService();
 
         // registerShutdownHook( graphDatabaseService );
 
-        FsnNeo4jMain.test(graphDatabaseService);
+        FsnNeo4jTest.test(graphDatabaseService);
 
         graphDatabaseService.shutdown();
     }

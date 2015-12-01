@@ -1,10 +1,8 @@
-package com.fs.fsnews.main;
-
 import es.jipeream.library.kafka.KfkConsumerGroup;
 
 import java.util.Properties;
 
-public class FsnKafkaConsumerMain {
+public class FsnKafkaConsumerTest {
     public static void main(String[] args) throws Exception {
         testConsumer();
     }

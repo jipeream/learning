@@ -1,5 +1,3 @@
-package com.fs.fsnews.config;
-
 import org.apache.tinkerpop.gremlin.neo4j.structure.Neo4jGraph;
 import org.apache.tinkerpop.gremlin.structure.Graph;
 

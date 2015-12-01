@@ -1,6 +1,7 @@
 package com.fs.fsnews.main;
 
-import com.fs.fsnews.config.FsnKafkaConfig;
+import com.fs.fsnews.config.KafkaConfig;
+import com.fs.fsnews.config.FsnRssConfig;
 import com.sun.syndication.feed.synd.SyndEntry;
 import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.io.SyndFeedInput;
@@ -13,39 +14,20 @@ import kafka.producer.KeyedMessage;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 public class FsnRssKafkaMain {
     public static void main(String[] args) throws Exception {
 
         List<String> entryUrlList = new ArrayList<>();
         //
-        List<URL> feedUrlList = new ArrayList<>();
+        Properties fsnRssProperties = FsnRssConfig.loadProperties();
         //
-        // http://www.elmundo.es/rss/
-        feedUrlList.add(new URL("http://estaticos.elmundo.es/elmundo/rss/portada.xml"));
-        feedUrlList.add(new URL("http://estaticos.elmundo.es/elmundodeporte/rss/portada.xml"));
-        //
-        // http://servicios.elpais.com/rss/
-        feedUrlList.add(new URL("http://ep00.epimg.net/rss/elpais/portada.xml"));
-        feedUrlList.add(new URL("http://ep00.epimg.net/rss/tags/noticias_mas_vistas.xml"));
-        feedUrlList.add(new URL("http://ep01.epimg.net/rss/elpais/blogs.xml"));
-        feedUrlList.add(new URL("http://ep00.epimg.net/rss/deportes/portada.xml"));
-        //
-        // http://www.abc.es/rss/
-        feedUrlList.add(new URL("http://www.abc.es/rss/feeds/abcPortada.xml"));
-        feedUrlList.add(new URL("http://www.abc.es/rss/feeds/abc_ultima.xml"));
-        feedUrlList.add(new URL("http://www.abc.es/rss/feeds/blogs-actualidad.xml"));
-        feedUrlList.add(new URL("http://www.abc.es/rss/feeds/abc_Deportes.xml"));
-        //
-        // http://www.la-razon.com/rss.html
-        feedUrlList.add(new URL("http://www.la-razon.com/rss/latest/?contentType=NWS"));
-        //
-        // http://www.efe.com
-        feedUrlList.add(new URL("http://www.efe.com/efe/espana/1/rss"));
+        List<URL> feedUrlList = FsnRssConfig.getFeedUrlList(fsnRssProperties);
         //
         Producer producer = null;
-//            Producer producer = FsnKafkaConfig.createLocalhostProducer();
-//            Producer producer = FsnKafkaConfig.createPreproProducer();
+//            Producer producer = KafkaConfig.createLocalhostProducer();
+//            Producer producer = KafkaConfig.createPreproProducer();
         //
         while (true) {
             SyndFeedOutput syndFeedOutput = new SyndFeedOutput();
@@ -71,18 +53,20 @@ public class FsnRssKafkaMain {
                     //
                     System.out.println(entryUrl.toExternalForm());
 //                    System.out.println(syndFeedOutput.outputString(outputSyndFeed));
+                    System.out.println(outputSyndEntry.getTitle());
+                    System.out.println(outputSyndEntry.getDescription().getValue());
                     for (String author : RssUtils.getAuthorList(outputSyndEntry)) {
                         System.out.println("@" + author);
                     }
                     //
                     if (producer != null) {
-                        KeyedMessage<String, String> message = new KeyedMessage(FsnKafkaConfig.TOPIC_fsinsights_rss, syndFeedOutput.outputString(outputSyndFeed));
+                        KeyedMessage<String, String> message = new KeyedMessage(KafkaConfig.TOPIC_fsinsights_rss, syndFeedOutput.outputString(outputSyndFeed));
                         producer.send(message);
                     }
                 }
             }
 
-            Thread.sleep(10000);
+            Thread.sleep(Long.parseLong(fsnRssProperties.getProperty("fsn.rss.loopIntervalMs", "10000")));
         }
     }
 }

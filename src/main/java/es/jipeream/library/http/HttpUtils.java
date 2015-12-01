@@ -15,6 +15,7 @@ public class HttpUtils {
         shortUrlDomainList.add("hubs.ly");
         shortUrlDomainList.add("ow.ly");
         shortUrlDomainList.add("bit.ly");
+        shortUrlDomainList.add("buff.ly");
         //
         shortUrlDomainList.add("1url.com");
         shortUrlDomainList.add("tinyurl.com");

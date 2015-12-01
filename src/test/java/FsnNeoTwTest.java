@@ -1,6 +1,3 @@
-package com.fs.fsnews.main;
-
-import com.fs.fsnews.config.FsnNeo4jConfig;
 import es.jipeream.library.neo4j.twitter.NeoTwDatabase;
 import es.jipeream.library.twitter.model.TwStatus;
 import es.jipeream.library.twitter.model.TwUser;
@@ -9,13 +6,11 @@ import org.json.JSONObject;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Transaction;
-import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 
-import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-public class FsnNeoTwMain {
+public class FsnNeoTwTest {
 
     public static final String SAMPLE_TWITTER_DIR = "./sample/twitter/";
     public static final String SAMPLE_RSS_DIR = "./sample/rss/";
@@ -79,13 +74,13 @@ public class FsnNeoTwMain {
     }
 
     public static void main(String[] args) throws Exception {
-        GraphDatabaseService graphDatabaseService = FsnNeo4jConfig.getEmbeddedGraphDatabaseService();
+        GraphDatabaseService graphDatabaseService = FsnNeo4jConfig.createEmbeddedGraphDatabaseService();
 
         // registerShutdownHook( graphDatabaseService );
 
         NeoTwDatabase neoTwDatabase = new NeoTwDatabase(graphDatabaseService);
 
-        // FsnNeo4jMain.test(graphDatabaseService);
+        // FsnNeo4jTest.test(graphDatabaseService);
 
         neoTwDatabase.createConstraints();
 
