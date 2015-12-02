@@ -23,10 +23,12 @@ public class FsnTwitterKafkaMain {
     private static class KafkaTwStatusListener extends TwStatusListener {
         private final StreamingEndpoint streamingEndpoint;
         private final Producer producer;
+        private final Properties fsnTwitterProperties;
 
-        public KafkaTwStatusListener(StreamingEndpoint streamingEndpoint, Producer producer) {
+        public KafkaTwStatusListener(StreamingEndpoint streamingEndpoint, Producer producer) throws Exception {
             this.streamingEndpoint = streamingEndpoint;
             this.producer = producer;
+            this.fsnTwitterProperties = FsnTwitterConfig.loadProperties("");
         }
 
         @Override
@@ -34,7 +36,7 @@ public class FsnTwitterKafkaMain {
             sendStatus(status, streamingEndpoint, producer);
         }
 
-        private static void sendStatus(Status status, StreamingEndpoint streamingEndpoint, Producer producer) {
+        private void sendStatus(Status status, StreamingEndpoint streamingEndpoint, Producer producer) {
 //        String statusJsonStr = TwitterObjectFactory.getRawJSON(status);
 //        System.out.println(statusJsonStr);
             System.out.println("-----" + streamingEndpoint.getClass().getSimpleName() + "-----" + status.getId() + "-----" + "@" + status.getUser().getScreenName() + "-" + status.getUser().getId() + "/" + "------");
@@ -54,8 +56,9 @@ public class FsnTwitterKafkaMain {
                 System.out.println("RT @" + retweetedStatus.getUser().getScreenName() + "-" + retweetedStatus.getUser().getId());
             }
             if (producer != null) {
-                KeyedMessage<String, Status> message = new KeyedMessage(KafkaConfig.TOPIC_fsinsights_twitter, status);
-//            KeyedMessage<String, String> message = new KeyedMessage(KafkaConfig.TOPIC_fsinsights_twitter, statusJsonStr);
+                String topic = fsnTwitterProperties.getProperty("fsn.twitter.topic");
+                KeyedMessage<String, Status> message = new KeyedMessage(topic, status);
+//                KeyedMessage<String, String> message = new KeyedMessage(topic, statusJsonStr);
                 producer.send(message);
             }
         }
@@ -64,13 +67,13 @@ public class FsnTwitterKafkaMain {
     public static void main(String[] args) {
         try {
             //
-            Properties kafkaProperties = KafkaConfig.loadProperties();
+            Properties kafkaProperties = KafkaConfig.loadProperties("");
             Producer producer = KafkaUtils.createProducer(kafkaProperties);
             //
-            Properties twitter4jProperties = Twitter4jConfig.loadProperties();
+            Properties twitter4jProperties = Twitter4jConfig.loadProperties("");
             Authentication authentication = TwitterUtils.createAuthentication(twitter4jProperties);
             //
-            Properties fsnTwitterProperties = FsnTwitterConfig.loadProperties();
+            Properties fsnTwitterProperties = FsnTwitterConfig.loadProperties("");
             List<StreamingEndpoint> streamingEndpointList = FsnTwitterConfig.getStreamingEndpointList(fsnTwitterProperties);
             //
             System.err.println("Starting clients...");

@@ -12,8 +12,8 @@ import java.util.Properties;
 
 public class FsnRssConfig {
 
-    public static Properties loadProperties() throws Exception {
-        Properties properties = JavaUtils.loadProperties(new File("config/fsn.rss.properties"));
+    public static Properties loadProperties(String dir) throws Exception {
+        Properties properties = JavaUtils.loadProperties("config/"+ dir + "/fsn.rss.properties");
         return properties;
     }
 

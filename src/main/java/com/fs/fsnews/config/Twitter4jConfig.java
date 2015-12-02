@@ -11,14 +11,14 @@ import java.util.Properties;
 
 public class Twitter4jConfig {
 
-    public static Properties loadProperties() throws Exception {
-        Properties properties = JavaUtils.loadProperties(new File("config/twitter4j.properties"));
+    public static Properties loadProperties(String dir) throws Exception {
+        Properties properties = JavaUtils.loadProperties("config/"+ dir + "/twitter4j.properties");
         return properties;
     }
 
-    public static Properties loadJipereamProperties() throws Exception {
-        Properties properties = JavaUtils.loadProperties(new File("config/twitter4j.jipeream.properties"));
-        return properties;
-    }
+//    public static Properties loadJipereamProperties() throws Exception {
+//        Properties properties = JavaUtils.loadProperties("config/twitter4j.jipeream.properties");
+//        return properties;
+//    }
 
 }

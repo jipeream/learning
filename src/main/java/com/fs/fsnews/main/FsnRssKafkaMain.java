@@ -1,6 +1,5 @@
 package com.fs.fsnews.main;
 
-import com.fs.fsnews.config.KafkaConfig;
 import com.fs.fsnews.config.FsnRssConfig;
 import com.sun.syndication.feed.synd.SyndContent;
 import com.sun.syndication.feed.synd.SyndEntry;
@@ -22,7 +21,7 @@ public class FsnRssKafkaMain {
 
         List<String> entryUrlList = new ArrayList<>();
         //
-        Properties fsnRssProperties = FsnRssConfig.loadProperties();
+        Properties fsnRssProperties = FsnRssConfig.loadProperties("");
         //
         List<URL> feedUrlList = FsnRssConfig.getFeedUrlList(fsnRssProperties);
         //
@@ -65,7 +64,8 @@ public class FsnRssKafkaMain {
                     }
                     //
                     if (producer != null) {
-                        KeyedMessage<String, String> message = new KeyedMessage(KafkaConfig.TOPIC_fsinsights_rss, syndFeedOutput.outputString(outputSyndFeed));
+                        String topic = fsnRssProperties.getProperty("fsn.rss.topic");
+                        KeyedMessage<String, String> message = new KeyedMessage(topic, syndFeedOutput.outputString(outputSyndFeed));
                         producer.send(message);
                     }
                 }

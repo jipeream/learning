@@ -12,8 +12,8 @@ import java.util.Properties;
 
 public class FsnTwitterConfig {
 
-    public static Properties loadProperties() throws Exception {
-        Properties properties = JavaUtils.loadProperties(new File("config/fsn.twitter.properties"));
+    public static Properties loadProperties(String dir) throws Exception {
+        Properties properties = JavaUtils.loadProperties("config/"+ dir + "/fsn.twitter.properties");
         return properties;
     }
 
