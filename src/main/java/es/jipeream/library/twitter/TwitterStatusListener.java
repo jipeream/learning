@@ -4,7 +4,7 @@ import twitter4j.StallWarning;
 import twitter4j.Status;
 import twitter4j.StatusDeletionNotice;
 
-public abstract class TwStatusListener implements twitter4j.StatusListener {
+public abstract class TwitterStatusListener implements twitter4j.StatusListener {
     @Override
     public abstract void onStatus(Status status);
 

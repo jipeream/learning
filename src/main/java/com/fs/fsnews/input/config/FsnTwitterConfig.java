@@ -1,11 +1,9 @@
-package com.fs.fsnews.config;
+package com.fs.fsnews.input.config;
 
 import com.twitter.hbc.core.endpoint.StreamingEndpoint;
 import es.jipeream.library.JavaUtils;
 import es.jipeream.library.twitter.TwitterUtils;
 
-import java.io.File;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -13,9 +11,12 @@ import java.util.Properties;
 public class FsnTwitterConfig {
 
     public static Properties loadProperties(String dir) throws Exception {
-        Properties properties = JavaUtils.loadProperties("config/"+ dir + "/fsn.twitter.properties");
+        Properties properties = JavaUtils.loadProperties("config/" + dir + "/fsn.twitter.properties");
         return properties;
     }
+
+    public static final String TWITTER_CLIENT_BasicClient = "BasicClient";
+    public static final String TWITTER_CLIENT_Twitter4jClient = "Twitter4jClient";
 
     public static List<StreamingEndpoint> getStreamingEndpointList(Properties properties) throws Exception {
         String endpoints = properties.getProperty("fsn.twitter.endpoints");

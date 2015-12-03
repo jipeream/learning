@@ -14,9 +14,17 @@ public class JavaUtils {
         return properties;
     }
 
-    public static Properties loadProperties(String filename) throws Exception {
+    public static Properties loadProperties(String propertiesFilename) throws Exception {
+//        propertiesFilename = propertiesFilename.replace("//", "/");
+        File propertiesFile = new File(propertiesFilename);
+        Properties properties = loadProperties(propertiesFile);
+        return properties;
+    }
+
+    public static Properties loadPropertiesFromResources(String propertiesFilename) throws Exception {
+//        propertiesFilename = propertiesFilename.replace("//", "/");
         Properties properties = new Properties();
-        InputStream inputStream = JavaUtils.class.getClassLoader().getResourceAsStream(filename);
+        InputStream inputStream = JavaUtils.class.getClassLoader().getResourceAsStream(propertiesFilename);
         properties.load(inputStream);
         inputStream.close();
         return properties;

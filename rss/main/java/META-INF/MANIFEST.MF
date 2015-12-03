@@ -1,0 +1,33 @@
+Manifest-Version: 1.0
+Class-Path: concurrentlinkedhashmap-lru-1.4.2.jar commons-configuratio
+ n-1.10.jar groovy-json-2.4.1-indy.jar neo4j-consistency-check-legacy-
+ 2.3.0.jar javatuples-1.2.jar hbc-core-2.2.0.jar neo4j-consistency-che
+ ck-2.3.0.jar slf4j-log4j12-1.7.12.jar scala-parser-combinators_2.11-1
+ .0.4.jar jcabi-manifests-1.1.jar neo4j-cypher-compiler-2.2_2.11-2.2.6
+ .jar opencsv-2.3.jar neo4j-cypher-compiler-2.3-2.3.0.jar parboiled-co
+ re-1.1.7.jar commons-codec-1.6.jar gremlin-groovy-3.1.0-incubating.ja
+ r neo4j-function-2.3.0.jar neo4j-primitive-collections-2.3.0.jar neo4
+ j-graph-algo-2.3.0.jar groovy-2.4.1.jar slf4j-api-1.6.6.jar jcabi-log
+ -0.14.jar httpcore-4.2.4.jar groovy-jsr223-2.4.1-indy.jar rome-1.0.ja
+ r groovy-2.4.1-indy.jar neo4j-unsafe-2.3.0.jar snappy-java-1.1.1.7.ja
+ r twitter4j-stream-4.0.1.jar joauth-6.0.2.jar parboiled-scala_2.11-1.
+ 1.7.jar twitter4j-core-4.0.1.jar log4j-1.2.16.jar scala-reflect-2.11.
+ 7.jar jbcrypt-0.3m.jar guava-14.0.1.jar neo4j-io-2.3.0.jar jopt-simpl
+ e-3.2.jar jcl-over-slf4j-1.7.12.jar ivy-2.3.0.jar gremlin-core-3.1.0-
+ incubating.jar groovy-templates-2.4.1.jar neo4j-gremlin-3.1.0-incubat
+ ing.jar groovy-console-2.4.1.jar zkclient-0.3.jar jdom-1.0.jar snakey
+ aml-1.15.jar lucene-core-3.6.2.jar asm-5.0.2.jar httpclient-4.2.5.jar
+  gremlin-shaded-3.1.0-incubating.jar neo4j-graph-matching-2.3.0.jar n
+ eo4j-codegen-2.3.0.jar commons-logging-1.1.1.jar neo4j-csv-2.3.0.jar 
+ zookeeper-3.4.6.jar metrics-core-2.2.0.jar neo4j-cypher-frontend-2.3-
+ 2.3.0.jar kafka_2.10-0.8.2.2.jar neo4j-cypher-2.3.0.jar neo4j-tinkerp
+ op-api-0.1.jar json-20090211.jar neo4j-udc-2.3.0.jar scala-library-2.
+ 10.4.jar groovy-xml-2.4.1.jar neo4j-jmx-2.3.0.jar commons-lang3-3.3.1
+ .jar neo4j-cypher-compiler-1.9_2.11-2.0.5.jar neo4j-kernel-2.3.0.jar 
+ neo4j-lucene-index-2.3.0.jar neo4j-2.3.0.jar hppc-0.7.1.jar neo4j-tin
+ kerpop-api-impl-0.3-2.3.0.jar kafka-clients-0.8.2.2.jar jsr305-1.3.9.
+ jar hbc-twitter4j-2.2.0.jar jline-0.9.94.jar junit-3.8.1.jar groovy-s
+ wing-2.4.1.jar netty-3.7.0.Final.jar lz4-1.2.0.jar commons-lang-2.6.j
+ ar neo4j-logging-2.3.0.jar groovy-groovysh-2.4.1-indy.jar
+Main-Class: com.fs.fsnews.input.endpoints.FsnInputRssEndpointMain
+

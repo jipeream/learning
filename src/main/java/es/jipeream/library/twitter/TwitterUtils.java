@@ -2,6 +2,7 @@ package es.jipeream.library.twitter;
 
 import com.google.common.collect.Lists;
 import com.twitter.hbc.ClientBuilder;
+import com.twitter.hbc.core.Client;
 import com.twitter.hbc.core.Constants;
 import com.twitter.hbc.core.endpoint.StatusesFilterEndpoint;
 import com.twitter.hbc.core.endpoint.StatusesSampleEndpoint;
@@ -14,7 +15,9 @@ import com.twitter.hbc.httpclient.auth.OAuth1;
 import com.twitter.hbc.twitter4j.Twitter4jStatusClient;
 import es.jipeream.library.JavaUtils;
 import es.jipeream.library.http.HttpUtils;
-import twitter4j.*;
+import twitter4j.Status;
+import twitter4j.StatusListener;
+import twitter4j.URLEntity;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -22,10 +25,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class TwitterUtils {
 
@@ -85,57 +86,22 @@ public class TwitterUtils {
         return urlList;
     }
 
-    public interface ITwitterQueueListener {
-        void onBeginListening(BlockingQueue<String> twitterQueue);
-        void onEndListening();
-        boolean onLoop();
-        void onStatusJsonStr(String statusJsonStr) throws Exception;
-    }
-
-    public static abstract class TwitterQueueListener implements ITwitterQueueListener {
-        private BlockingQueue<String> twitterQueue;
-
-        public BlockingQueue<String> getTwitterQueue() {
-            return twitterQueue;
-        }
-
-        @Override
-        public void onBeginListening(BlockingQueue<String> twitterQueue) {
-            this.twitterQueue = twitterQueue;
-        }
-
-        @Override
-        public void onEndListening() {
-        }
-
-        @Override
-        public boolean onLoop() {
-            return true;
-        }
-
-        @Override
-        public void onStatusJsonStr(String statusJsonStr) throws Exception {
-            Status status = TwitterObjectFactory.createStatus(statusJsonStr);
-            onStatus(status);
-        }
-
-        public abstract void onStatus(Status status) throws Exception;
-
-    }
-
-    public static Thread createStatusQueueListeningThread(BlockingQueue<String> twitterQueue, ITwitterQueueListener statusQueueListenerCallback) {
+    public static Thread createStatusQueueListeningThread(final BlockingQueue<String> twitterQueue, final ITwitterQueueListener statusQueueListenerCallback, final AtomicBoolean stopping) {
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 statusQueueListenerCallback.onBeginListening(twitterQueue);
-                while (!statusQueueListenerCallback.onLoop()) {
+                while (!stopping.get()) {
                     try {
-                        String twitterJsonStr = twitterQueue.take();
-                        System.err.println(twitterJsonStr);
-                        if (twitterJsonStr.startsWith("{\"created_at\":")) {
-                            statusQueueListenerCallback.onStatusJsonStr(twitterJsonStr);
-                        } else {
-//                             System.err.println(twitterJsonStr);
+                        // String twitterJsonStr = twitterQueue.take();
+                        String twitterJsonStr = twitterQueue.poll(1000, TimeUnit.MILLISECONDS);
+                        if (twitterJsonStr != null) {
+                            System.err.println(twitterJsonStr);
+                            if (twitterJsonStr.startsWith("{\"created_at\":")) {
+                                statusQueueListenerCallback.onStatusJsonStr(twitterJsonStr);
+                            } else {
+//                                System.err.println(twitterJsonStr);
+                            }
                         }
                     } catch (Exception e) {
                         e.printStackTrace(System.err);
@@ -208,7 +174,29 @@ public class TwitterUtils {
 
     /**/
 
-    public static Twitter4jStatusClient startTwitter4jClient(StreamingEndpoint streamingEndpoint, Authentication authentication, TwStatusListener twStatusListener) throws Exception {
+    public static class TwitterClient {
+        public final Client client;
+        public final Thread thread;
+        public final AtomicBoolean stopping;
+
+        public TwitterClient(Client client, Thread thread, AtomicBoolean stopping) {
+            this.client = client;
+            this.thread = thread;
+            this.stopping = stopping;
+        }
+
+        public void stop() throws InterruptedException {
+            client.stop();
+            if (stopping != null) {
+                stopping.set(true);
+            }
+            if (thread != null) {
+                thread.join(10000);
+            }
+        }
+    }
+
+    public static TwitterClient startTwitter4jClient(StreamingEndpoint streamingEndpoint, Authentication authentication, TwitterStatusListener twitterStatusListener) throws Exception {
         int numProcessingThreads = 2;
         int queueSize = 100;
         if (streamingEndpoint instanceof StatusesSampleEndpoint) {
@@ -216,26 +204,22 @@ public class TwitterUtils {
             queueSize = 10000;
         }
         BlockingQueue<String> blockingQueue = TwitterUtils.createBlockingQueue(queueSize);
-        List<StatusListener> userStreamListenerList = TwitterUtils.createStatusListenerList(twStatusListener);
+        List<StatusListener> statusListenerList = TwitterUtils.createStatusListenerList(twitterStatusListener);
         ExecutorService executorService = TwitterUtils.createExecutorService(numProcessingThreads);
-        Twitter4jStatusClient twitter4jStatusClient = TwitterUtils.createTwitter4jStatusClient(streamingEndpoint, authentication, blockingQueue, userStreamListenerList, executorService);
+        Twitter4jStatusClient twitter4jStatusClient = TwitterUtils.createTwitter4jStatusClient(streamingEndpoint, authentication, blockingQueue, statusListenerList, executorService);
         twitter4jStatusClient.connect();
         TwitterUtils.startTwitter4jClientThreads(twitter4jStatusClient, numProcessingThreads);
-        return twitter4jStatusClient;
+        return new TwitterClient(twitter4jStatusClient, null, null);
     }
 
-    public static Thread startBasicClient(StreamingEndpoint streamingEndpoint, Authentication authentication, TwStatusListener twStatusListener) throws Exception {
+    public static TwitterClient startBasicClient(StreamingEndpoint streamingEndpoint, Authentication authentication, ITwitterQueueListener twitterQueueListener) throws Exception {
         BlockingQueue<String> blockingQueue = TwitterUtils.createBlockingQueue(100);
         BasicClient basicClient = TwitterUtils.createBasicClient(streamingEndpoint, authentication, blockingQueue);
         basicClient.connect();
-        Thread thread = TwitterUtils.createStatusQueueListeningThread(blockingQueue, new TwitterQueueListener() {
-            @Override
-            public void onStatus(Status status) {
-                twStatusListener.onStatus(status);
-            }
-        });
+        AtomicBoolean stopping = new AtomicBoolean();
+        Thread thread = TwitterUtils.createStatusQueueListeningThread(blockingQueue, twitterQueueListener, stopping);
         thread.start();
-        return thread;
+        return new TwitterClient(basicClient, thread, stopping);
     }
 
 }

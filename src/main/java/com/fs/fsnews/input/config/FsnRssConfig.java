@@ -1,10 +1,7 @@
-package com.fs.fsnews.config;
+package com.fs.fsnews.input.config;
 
-import com.twitter.hbc.core.endpoint.StreamingEndpoint;
 import es.jipeream.library.JavaUtils;
-import es.jipeream.library.twitter.TwitterUtils;
 
-import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +10,7 @@ import java.util.Properties;
 public class FsnRssConfig {
 
     public static Properties loadProperties(String dir) throws Exception {
-        Properties properties = JavaUtils.loadProperties("config/"+ dir + "/fsn.rss.properties");
+        Properties properties = JavaUtils.loadProperties("config/" + dir + "/fsn.rss.properties");
         return properties;
     }
 

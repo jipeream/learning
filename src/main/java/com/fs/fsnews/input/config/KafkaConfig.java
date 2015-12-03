@@ -1,26 +1,23 @@
-package com.fs.fsnews.config;
+package com.fs.fsnews.input.config;
 
 import es.jipeream.library.JavaUtils;
-import kafka.javaapi.producer.Producer;
-import kafka.producer.ProducerConfig;
 
-import java.io.File;
 import java.util.Properties;
 
 public class KafkaConfig {
 
     public static Properties loadProperties(String dir) throws Exception {
-        Properties properties = JavaUtils.loadProperties("config/"+ dir + "/kafka.properties");
+        Properties properties = JavaUtils.loadProperties("config/" + dir + "/kafka.properties");
         return properties;
     }
 
 //    public static Properties loadLocalProperties() throws Exception {
-//        Properties properties = JavaUtils.loadProperties("config/kafka.local.properties");
+//        Properties properties = JavaUtils.loadProperties("config/kafka.properties");
 //        return properties;
 //    }
 //
 //    public static Properties loadPreproProperties() throws Exception {
-//        Properties properties = JavaUtils.loadProperties("config/kafka.prepro.properties");
+//        Properties properties = JavaUtils.loadProperties("config/kafka.properties");
 //        return properties;
 //    }
 
