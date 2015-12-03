@@ -4,6 +4,7 @@ import kafka.consumer.ConsumerConfig;
 import kafka.consumer.ConsumerIterator;
 import kafka.consumer.KafkaStream;
 import kafka.javaapi.consumer.ConsumerConnector;
+import org.apache.log4j.Logger;
 
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +15,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 public abstract class KfkConsumerGroup {
+    static Logger logger = Logger.getLogger(KfkConsumerGroup.class);
+
     private final ConsumerConnector consumerConnector;
     private final String topic;
     private ExecutorService executor;
@@ -28,10 +31,10 @@ public abstract class KfkConsumerGroup {
         if (executor != null) executor.shutdown();
         try {
             if (!executor.awaitTermination(5000, TimeUnit.MILLISECONDS)) {
-                System.out.println("Timed out waiting for consumer threads to shut down, exiting uncleanly");
+                logger.warn("Timed out waiting for consumer threads to shut down, exiting uncleanly");
             }
         } catch (InterruptedException e) {
-            System.out.println("Interrupted during shutdown, exiting uncleanly");
+            logger.warn("Interrupted during shutdown, exiting uncleanly");
         }
     }
 
@@ -63,14 +66,14 @@ public abstract class KfkConsumerGroup {
 
         @Override
         public void run() {
-            System.out.println("Starting thread: " + threadNumber);
+            logger.trace("Starting thread: " + threadNumber);
             ConsumerIterator<byte[], byte[]> it = kafkaStream.iterator();
             while (it.hasNext()) {
                 byte[] message = it.next().message();
                 // System.out.println("Consumed in thread " + threadNumber + ": " + new String(message));
                 onMessageConsumed(message);
             }
-            System.out.println("Shutting down thread: " + threadNumber);
+            logger.trace("Shutting down thread: " + threadNumber);
         }
     }
 

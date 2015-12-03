@@ -15,6 +15,7 @@ import com.twitter.hbc.httpclient.auth.OAuth1;
 import com.twitter.hbc.twitter4j.Twitter4jStatusClient;
 import es.jipeream.library.JavaUtils;
 import es.jipeream.library.http.HttpUtils;
+import org.apache.log4j.Logger;
 import twitter4j.Status;
 import twitter4j.StatusListener;
 import twitter4j.URLEntity;
@@ -29,6 +30,7 @@ import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class TwitterUtils {
+    static Logger logger = Logger.getLogger(TwitterUtils.class);
 
     public static BasicClient createBasicClient(StreamingEndpoint streamingEndpoint, Authentication authentication, BlockingQueue<String> blockingQueue) {
         BasicClient basicClient = new ClientBuilder().hosts(Constants.STREAM_HOST)
@@ -96,15 +98,15 @@ public class TwitterUtils {
                         // String twitterJsonStr = twitterQueue.take();
                         String twitterJsonStr = twitterQueue.poll(1000, TimeUnit.MILLISECONDS);
                         if (twitterJsonStr != null) {
-                            System.err.println(twitterJsonStr);
                             if (twitterJsonStr.startsWith("{\"created_at\":")) {
+                                logger.debug(twitterJsonStr);
                                 statusQueueListenerCallback.onStatusJsonStr(twitterJsonStr);
                             } else {
-//                                System.err.println(twitterJsonStr);
+                                logger.trace(twitterJsonStr);
                             }
                         }
                     } catch (Exception e) {
-                        e.printStackTrace(System.err);
+                        logger.error("Error", e);
                         break;
                     }
                 }

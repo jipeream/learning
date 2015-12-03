@@ -11,6 +11,7 @@ import es.jipeream.library.twitter.TwitterStatusListener;
 import es.jipeream.library.twitter.TwitterUtils;
 import kafka.javaapi.producer.Producer;
 import kafka.producer.KeyedMessage;
+import org.apache.log4j.Logger;
 import twitter4j.HashtagEntity;
 import twitter4j.Status;
 import twitter4j.TwitterObjectFactory;
@@ -22,6 +23,8 @@ import java.util.Properties;
 import java.util.concurrent.BlockingQueue;
 
 public class FsnInputTwitterEndpointMain {
+    static Logger logger = Logger.getLogger(FsnInputTwitterEndpointMain.class);
+
     public static class KafkaTwitterStatusListener extends TwitterStatusListener implements ITwitterQueueListener {
         private final StreamingEndpoint streamingEndpoint;
         private final Producer producer;
@@ -55,21 +58,21 @@ public class FsnInputTwitterEndpointMain {
         }
 
         private void sendStatus(Status status, String statusJsonStr, StreamingEndpoint streamingEndpoint, Producer producer) {
-            System.out.println("-----" + streamingEndpoint.getClass().getSimpleName() + "-----" + status.getId() + "-----" + "@" + status.getUser().getScreenName() + "-" + status.getUser().getId() + "/" + "------");
-            System.out.println("«" + status.getText() + "»");
+            logger.info("-----" + streamingEndpoint.getClass().getSimpleName() + "-----" + status.getId() + "-----" + "@" + status.getUser().getScreenName() + "-" + status.getUser().getId() + "/" + "------");
+            logger.debug("«" + status.getText() + "»");
             for (URL url : TwitterUtils.getUrlList(status, true)) {
-                System.out.println(url.toExternalForm());
+                logger.debug(url.toExternalForm());
             }
             for (HashtagEntity hashtagEntity : status.getHashtagEntities()) {
-                System.out.println("#" + hashtagEntity.getText());
+                logger.debug("#" + hashtagEntity.getText());
             }
             if (status.getInReplyToScreenName() != null) {
-                System.out.println("rep @" + status.getInReplyToScreenName());
+                logger.debug("rep @" + status.getInReplyToScreenName());
             }
             Status retweetedStatus = status.getRetweetedStatus();
             if (retweetedStatus != null) {
-                System.out.println("RT «" + retweetedStatus.getText() + "»");
-                System.out.println("RT @" + retweetedStatus.getUser().getScreenName() + "-" + retweetedStatus.getUser().getId());
+                logger.debug("RT «" + retweetedStatus.getText() + "»");
+                logger.debug("RT @" + retweetedStatus.getUser().getScreenName() + "-" + retweetedStatus.getUser().getId());
             }
             if (producer != null) {
                 String topic = fsnTwitterProperties.getProperty("fsn.twitter.topic");
@@ -81,7 +84,7 @@ public class FsnInputTwitterEndpointMain {
                     KeyedMessage<String, Status> message = new KeyedMessage(topic, status);
                     producer.send(message);
                 } else {
-                    System.out.println(statusJsonStr);
+                    logger.info(statusJsonStr);
                     KeyedMessage<String, String> message = new KeyedMessage(topic, statusJsonStr);
                     producer.send(message);
                 }
@@ -100,7 +103,7 @@ public class FsnInputTwitterEndpointMain {
             Properties fsnTwitterProperties = FsnTwitterConfig.loadProperties("");
             List<StreamingEndpoint> streamingEndpointList = FsnTwitterConfig.getStreamingEndpointList(fsnTwitterProperties);
             //
-            System.err.println("Starting clients...");
+            logger.info("Starting clients...");
             //
             List<TwitterUtils.TwitterClient> twitterClientList = new ArrayList<>();
             //
@@ -108,23 +111,23 @@ public class FsnInputTwitterEndpointMain {
             //
             if (FsnTwitterConfig.TWITTER_CLIENT_Twitter4jClient.equals(client)) {
                 for (StreamingEndpoint streamingEndpoint : streamingEndpointList) {
-                    System.err.println("Starting client - " + streamingEndpoint.toString() + "...");
+                    logger.info("Starting client - " + streamingEndpoint.toString() + "...");
                     twitterClientList.add(TwitterUtils.startTwitter4jClient(streamingEndpoint, authentication, new KafkaTwitterStatusListener(streamingEndpoint, producer)));
                 }
             }
             //
             if (FsnTwitterConfig.TWITTER_CLIENT_BasicClient.equals(client)) {
                 for (StreamingEndpoint streamingEndpoint : streamingEndpointList) {
-                    System.err.println("Starting client - " + streamingEndpoint.toString() + "...");
+                    logger.info("Starting client - " + streamingEndpoint.toString() + "...");
                     twitterClientList.add(TwitterUtils.startBasicClient(streamingEndpoint, authentication, new KafkaTwitterStatusListener(streamingEndpoint, producer)));
                 }
             }
             //
-            System.err.println("Processing...");
+            logger.info("Processing...");
             //
             Thread.sleep(Long.parseLong(fsnTwitterProperties.getProperty("fsn.twitter.durationMs", "999999999999999")));
             //
-            System.err.println("Stopping clients...");
+            logger.info("Stopping clients...");
             //
             for (TwitterUtils.TwitterClient twitterClient : twitterClientList) {
                 twitterClient.stop();
@@ -134,7 +137,7 @@ public class FsnInputTwitterEndpointMain {
                 producer.close();
             }
         } catch (Exception e) {
-            e.printStackTrace(System.err);
+            logger.error("Error", e);
         }
     }
 }

@@ -13,6 +13,7 @@ import es.jipeream.library.rss.RssUtils;
 import kafka.javaapi.producer.Producer;
 import kafka.producer.KeyedMessage;
 import kafka.producer.ProducerClosedException;
+import org.apache.log4j.Logger;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -20,9 +21,11 @@ import java.util.List;
 import java.util.Properties;
 
 public class FsnInputRssEndpointMain {
+    static Logger logger = Logger.getLogger(FsnInputRssEndpointMain.class);
+
     public static void main(String[] args) throws Exception {
         Properties kafkaProperties = KafkaConfig.loadProperties("");
-        Producer producer = KafkaUtils.createProducer(kafkaProperties);
+        Producer producer = null;
         //
         List<String> entryUrlList = new ArrayList<>();
         //
@@ -40,7 +43,7 @@ public class FsnInputRssEndpointMain {
                     for (Object entry : inputSyndFeed.getEntries()) {
                         SyndEntry inputSyndEntry = (SyndEntry) entry;
                         String urlStr = inputSyndEntry.getLink();
-                        // System.err.println(urlStr);
+                        logger.debug(urlStr);
                         URL entryUrl = new URL(urlStr);
                         synchronized (entryUrlList) {
                             if (!entryUrlList.contains(entryUrl.toExternalForm())) {
@@ -56,14 +59,18 @@ public class FsnInputRssEndpointMain {
                             outputSyndFeed.getEntries().clear();
                             outputSyndFeed.getEntries().add(outputSyndEntry);
                             //
-                            System.out.println(entryUrl.toExternalForm());
-//                            System.out.println(syndFeedOutput.outputString(outputSyndFeed));
+                            logger.info(entryUrl.toExternalForm());
+//                            logger.info(syndFeedOutput.outputString(outputSyndFeed));
                             String title = outputSyndEntry.getTitle();
                             SyndContent description = outputSyndEntry.getDescription();
-                            System.out.println("Title: " + title);
-                            System.out.println("Description: " + (description == null ? "-" : description.getValue().length()));
+                            logger.info("Title: " + title);
+                            logger.info("Description: " + (description == null ? "-" : description.getValue().length()));
                             for (String author : RssUtils.getAuthorList(outputSyndEntry)) {
-                                System.out.println("@" + author);
+                                logger.info("@" + author);
+                            }
+                            //
+                            if (producer == null) {
+                                producer = KafkaUtils.createProducer(kafkaProperties);
                             }
                             //
                             if (producer != null) {
@@ -72,24 +79,36 @@ public class FsnInputRssEndpointMain {
                                 producer.send(message);
                             }
                         } catch (Exception e) {
+                            logger.error("Error", e);
                             synchronized (entryUrlList) {
                                 entryUrlList.remove(entryUrl.toExternalForm());
                             }
                             if (e instanceof ProducerClosedException) {
+                                if (producer != null) {
+                                    producer.close();
+                                    producer = null;
+                                }
+                                //
                                 producer = KafkaUtils.createProducer(kafkaProperties);
                             }
                         }
                     }
                 } catch (Exception e) {
-                    // log
+                    logger.error("Error", e);
                 }
             }
             //
-            Thread.sleep(Long.parseLong(fsnRssProperties.getProperty("fsn.rss.loopIntervalMs", "10000")));
-            //
             if (producer != null) {
                 producer.close();
+                producer = null;
             }
+            //
+            Thread.sleep(Long.parseLong(fsnRssProperties.getProperty("fsn.rss.loopIntervalMs", "10000")));
         }
+        //
+//        if (producer != null) {
+//            producer.close();
+//            producer = null;
+//        }
     }
 }

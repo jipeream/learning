@@ -2,9 +2,14 @@ package es.jipeream.library.neo4j.twitter;
 
 import es.jipeream.library.twitter.model.TwStatus;
 import es.jipeream.library.twitter.model.TwUser;
+import org.apache.log4j.Logger;
 import org.neo4j.graphdb.*;
 
 public class NeoTwDatabase {
+    static Logger logger = Logger.getLogger(NeoTwDatabase.class);
+
+    /**/
+
     public NeoTwDatabase(GraphDatabaseService graphDb) {
         this.graphDb = graphDb;
     }
@@ -96,9 +101,9 @@ public class NeoTwDatabase {
         Node node = getTwStatusNodeById(twStatus.getId());
         if (node == null) {
             node = createTwStatusNode(twStatus);
-            System.out.println("Created node " + node.getLabels().iterator().next().name() + " " + node.getProperty("text"));
+            logger.debug("Created node " + node.getLabels().iterator().next().name() + " " + node.getProperty("text"));
         } else {
-            System.out.println("Found node " + node.getLabels().iterator().next().name() + " " + node.getProperty("text"));
+            logger.debug("Found node " + node.getLabels().iterator().next().name() + " " + node.getProperty("text"));
         }
         return node;
     }
