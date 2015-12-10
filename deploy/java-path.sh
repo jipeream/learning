@@ -1,8 +1,11 @@
-#export JAVA_HOME=/binarios/jdk1.7.0_79
-export JAVA_HOME=/binarios/jdk1.8.0_40
+#!/usr/bin/env bash
+#JAVA_HOME=/binarios/jdk1.7.0_79
+JAVA_HOME=/binarios/jdk1.8.0_40
 echo JAVA_HOME=$JAVA_HOME
+export JAVA_HOME
 
-export PATH=$JAVA_HOME/bin:$PATH
+PATH=$JAVA_HOME/bin:$PATH
 echo PATH=$PATH
+export PATH
 
 java -version

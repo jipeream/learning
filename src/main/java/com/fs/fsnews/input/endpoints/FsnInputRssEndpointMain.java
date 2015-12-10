@@ -1,7 +1,7 @@
 package com.fs.fsnews.input.endpoints;
 
-import com.fs.fsnews.input.config.FsnRssConfig;
-import com.fs.fsnews.input.config.KafkaConfig;
+import com.fs.fsnews.config.FsnRssConfig;
+import com.fs.fsnews.config.KafkaConfig;
 import com.sun.syndication.feed.synd.SyndContent;
 import com.sun.syndication.feed.synd.SyndEntry;
 import com.sun.syndication.feed.synd.SyndFeed;

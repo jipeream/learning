@@ -1,8 +1,8 @@
 package com.fs.fsnews.input.endpoints;
 
-import com.fs.fsnews.input.config.FsnTwitterConfig;
-import com.fs.fsnews.input.config.KafkaConfig;
-import com.fs.fsnews.input.config.Twitter4jConfig;
+import com.fs.fsnews.config.FsnTwitterConfig;
+import com.fs.fsnews.config.KafkaConfig;
+import com.fs.fsnews.config.Twitter4jConfig;
 import com.twitter.hbc.core.endpoint.StreamingEndpoint;
 import com.twitter.hbc.httpclient.auth.Authentication;
 import es.jipeream.library.kafka.KafkaUtils;
@@ -84,7 +84,7 @@ public class FsnInputTwitterEndpointMain {
                     KeyedMessage<String, Status> message = new KeyedMessage(topic, status);
                     producer.send(message);
                 } else {
-                    logger.info(statusJsonStr);
+                    logger.trace(statusJsonStr);
                     KeyedMessage<String, String> message = new KeyedMessage(topic, statusJsonStr);
                     producer.send(message);
                 }

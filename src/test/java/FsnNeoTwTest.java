@@ -12,8 +12,8 @@ import java.nio.file.Paths;
 
 public class FsnNeoTwTest {
 
-    public static final String SAMPLE_TWITTER_DIR = "./sample/twitter/";
-    public static final String SAMPLE_RSS_DIR = "./sample/rss/";
+    public static final String SAMPLE_TWITTER_DIR = "sample/twitter/";
+    public static final String SAMPLE_RSS_DIR = "sample/rss/";
 
     public static void aclerkTest(NeoTwDatabase neoTwDatabase) throws Exception {
         final int aclerkId = 316751683;
