@@ -6,7 +6,6 @@ import cc.mallet.pipe.Pipe;
 import cc.mallet.pipe.SerialPipes;
 import cc.mallet.topics.ParallelTopicModel;
 import cc.mallet.topics.TopicInferencer;
-import cc.mallet.types.Alphabet;
 import cc.mallet.types.IDSorter;
 import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
@@ -34,9 +33,9 @@ public class FsnMalletProjector {
     /**/
 
     private String modelName;
+    private int modelNumIterations;
     private InstanceList instanceList;
     private ParallelTopicModel model;
-    private double weightThreshold;
 
     public String getModelName() {
         return modelName;
@@ -46,16 +45,16 @@ public class FsnMalletProjector {
         return instanceList;
     }
 
-    public InstanceList createInstanceList() {
-        Pipe pipe = new SerialPipes(new Pipe[]{new Input2CharSequence(), new CharSequenceRemoveHTML()});
-        InstanceList instanceList = new InstanceList(pipe);
-        return instanceList;
-    }
-
     public ParallelTopicModel getModel() {
         return model;
     }
 
+    /**/
+
+    private int numIterations;
+    private int thinning = 1;
+    private int burnIn = 20;
+    private double weightThreshold;
     public double getWeightThreshold() {
         return weightThreshold;
     }
@@ -73,17 +72,20 @@ public class FsnMalletProjector {
     }
 
     public void prepare(Properties fsnMalletProperties) throws Exception {
-        String modelName = fsnMalletProperties.getProperty("fsn.mallet.model.modelName", "model_00");
-        int numIterations = Integer.parseInt(fsnMalletProperties.getProperty("fsn.mallet.model.numIterations", "1000"));
+        this.modelName = fsnMalletProperties.getProperty("fsn.mallet.model.name", "model_00");
+        this.modelNumIterations = Integer.parseInt(fsnMalletProperties.getProperty("fsn.mallet.model.numIterations", "1000"));
         //
         File modelsDir = new File(fsnMalletProperties.getProperty("fsn.mallet.modelsDir", "mallet"));
         File modelDir = new File(modelsDir, modelName);
-        File modelFile = new File(modelDir, "model." + numIterations);
+        File modelFile = new File(modelDir, "model." + modelNumIterations);
         File instancesFile = new File(modelDir, "instances");
         //
-        this.modelName = modelName;
         this.instanceList = InstanceList.load(instancesFile);
         this.model = ParallelTopicModel.read(modelFile);
+        //
+        this.numIterations = Integer.parseInt(fsnMalletProperties.getProperty("fsn.mallet.projector.numIterations", "1000"));
+        this.thinning = Integer.parseInt(fsnMalletProperties.getProperty("fsn.mallet.projector.thinning", "1"));
+        this.burnIn =  Integer.parseInt(fsnMalletProperties.getProperty("fsn.mallet.projector.burnIn", "20"));
         this.weightThreshold = Double.parseDouble(fsnMalletProperties.getProperty("fsn.mallet.projector.weightThreshold", "0.0001"));
     }
 
@@ -119,16 +121,26 @@ public class FsnMalletProjector {
         }
     }
 
+    public InstanceList createInstanceList() {
+        // Pipe pipe = new SerialPipes(new Pipe[]{new Input2CharSequence(), new CharSequenceRemoveHTML()});
+        Pipe pipe = getInstanceList().getPipe();
+        InstanceList instanceList = new InstanceList(pipe);
+        return instanceList;
+    }
+
     public List<InferredTopic> getInferredTopicList(String text) {
         List<InferredTopic> inferredTopicList = new ArrayList<>();
         //
-//        InstanceList instanceList = createInstanceList();
-//        instanceList.addThruPipe(new Instance(text, null, "instance", null));
+        InstanceList instanceList = createInstanceList();
+//        InstanceList instanceList = getInstanceList();
+//        instanceList.addThruPipe(instance);
+//        // Instance instance = instanceList.get(0);
         //
-        InstanceList instanceList = getInstanceList();
+        Instance instance = new Instance(text, null, "instance", null);
+        instanceList.addThruPipe(instance);
         //
         TopicInferencer topicInferencer = model.getInferencer();
-        double[] weightArray = topicInferencer.getSampledDistribution(instanceList.get(0), 10000, 1, 20);
+        double[] weightArray = topicInferencer.getSampledDistribution(instance, numIterations, thinning, burnIn);
         //
         for (int topicNum = 0 ; topicNum < weightArray.length; ++ topicNum) {
             InferredTopic inferredTopic = new InferredTopic(getModelName(), topicNum, weightArray[topicNum]);
@@ -155,7 +167,7 @@ public class FsnMalletProjector {
         fsnMalletProjector.prepare();
         //
         Properties fsnMalletProperties = FsnMalletConfig.loadProperties("");
-        String text = fsnMalletProperties.getProperty("fsn.mallet.testing.text", "Un dos tres probando");
+        String text = fsnMalletProperties.getProperty("fsn.mallet.testing.text", "Política España Cataluña");
         //
         List<InferredTopic> inferredTopicList = fsnMalletProjector.getInferredTopicList(text);
         //

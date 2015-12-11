@@ -59,9 +59,9 @@ public class FsnInputTwitterEndpointMain {
 
         private void sendStatus(Status status, String statusJsonStr, StreamingEndpoint streamingEndpoint, Producer producer) {
             logger.info("-----" + streamingEndpoint.getClass().getSimpleName() + "-----" + status.getId() + "-----" + "@" + status.getUser().getScreenName() + "-" + status.getUser().getId() + "/" + "------");
-            logger.debug("«" + status.getText() + "»");
+            logger.info("«" + status.getText() + "»");
             for (URL url : TwitterUtils.getUrlList(status, true)) {
-                logger.debug(url.toExternalForm());
+                logger.info(url.toExternalForm());
             }
             for (HashtagEntity hashtagEntity : status.getHashtagEntities()) {
                 logger.debug("#" + hashtagEntity.getText());

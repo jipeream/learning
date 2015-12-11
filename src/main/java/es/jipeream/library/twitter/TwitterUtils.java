@@ -80,6 +80,7 @@ public class TwitterUtils {
                 if (unshorten) {
                     url = HttpUtils.getUnshortenedUrl(url);
                 }
+                url = new URL(url.getProtocol(), url.getHost(), url.getPort(), url.getPath());
                 urlList.add(url);
             } catch (MalformedURLException e) {
             } catch (Exception e) {

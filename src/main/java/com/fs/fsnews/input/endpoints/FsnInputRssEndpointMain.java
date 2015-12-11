@@ -43,7 +43,7 @@ public class FsnInputRssEndpointMain {
                     for (Object entry : inputSyndFeed.getEntries()) {
                         SyndEntry inputSyndEntry = (SyndEntry) entry;
                         String urlStr = inputSyndEntry.getLink();
-                        logger.debug(urlStr);
+                        logger.trace(urlStr);
                         URL entryUrl = new URL(urlStr);
                         synchronized (entryUrlList) {
                             if (!entryUrlList.contains(entryUrl.toExternalForm())) {
@@ -58,6 +58,9 @@ public class FsnInputRssEndpointMain {
                             SyndEntry outputSyndEntry = (SyndEntry) inputSyndEntry.clone();
                             outputSyndFeed.getEntries().clear();
                             outputSyndFeed.getEntries().add(outputSyndEntry);
+                            //
+                            String rssString = syndFeedOutput.outputString(outputSyndFeed);
+                            logger.info(rssString);
                             //
                             logger.info(entryUrl.toExternalForm());
 //                            logger.info(syndFeedOutput.outputString(outputSyndFeed));
@@ -75,7 +78,7 @@ public class FsnInputRssEndpointMain {
                             //
                             if (producer != null) {
                                 String topic = fsnRssProperties.getProperty("fsn.rss.topic");
-                                KeyedMessage<String, String> message = new KeyedMessage(topic, syndFeedOutput.outputString(outputSyndFeed));
+                                KeyedMessage<String, String> message = new KeyedMessage(topic, rssString);
                                 producer.send(message);
                             }
                         } catch (Exception e) {

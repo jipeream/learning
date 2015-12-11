@@ -95,10 +95,10 @@ public class FsnMalletTrainer {
     public static void main(String[] args) throws Exception {
         Properties fsnMalletProperties = FsnMalletConfig.loadProperties("");
         //
-        String modelName = fsnMalletProperties.getProperty("fsn.mallet.model.modelName", "model_00");
+        String modelName = fsnMalletProperties.getProperty("fsn.mallet.model.name", "model_00");
         int numIterations = Integer.parseInt(fsnMalletProperties.getProperty("fsn.mallet.model.numIterations", "1000"));
         //
-        File modelsDir = new File(fsnMalletProperties.getProperty("fsn.mallet.modelsDir", "mallet"));
+        File modelsDir = new File(fsnMalletProperties.getProperty("fsn.mallet.modelsDir", "./mallet"));
         File modelDir = new File(modelsDir, modelName);
         //File modelFile = new File(modelDir, "model." + numIterations);
         File modelFile = new File(modelDir, "model");
@@ -111,9 +111,9 @@ public class FsnMalletTrainer {
         int numThreads = Integer.parseInt(fsnMalletProperties.getProperty("fsn.mallet.training.numThreads", "2"));
         int optimizeInterval = Integer.parseInt(fsnMalletProperties.getProperty("fsn.mallet.training.optimizeInterval", "50"));
         //
-        File trainingFile = new File (fsnMalletProperties.getProperty("fsn.mallet.training.fileName","config/mallet/training.clean.txt"));
+        File trainingFile = new File (fsnMalletProperties.getProperty("fsn.mallet.training.fileName","./config/mallet/training.clean.txt"));
         //
-        File stopwordsFile = new File(fsnMalletProperties.getProperty("fsn.mallet.stopwords.fileName", "config/mallet/stopwords.txt"));
+        File stopwordsFile = new File(fsnMalletProperties.getProperty("fsn.mallet.stopwords.fileName", "./config/mallet/stopwords.txt"));
         //
         modelDir.mkdirs();
         //
