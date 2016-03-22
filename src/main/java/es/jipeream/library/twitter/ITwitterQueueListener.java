@@ -1,11 +1,15 @@
+/*
+ * Decompiled with CFR 0_115.
+ */
 package es.jipeream.library.twitter;
 
 import java.util.concurrent.BlockingQueue;
 
 public interface ITwitterQueueListener {
-    void onBeginListening(BlockingQueue<String> twitterQueue);
+    public void onBeginListening(BlockingQueue<String> var1);
 
-    void onEndListening();
+    public void onEndListening();
 
-    void onStatusJsonStr(String statusJsonStr) throws Exception;
+    public void onStatusJsonStr(String var1) throws Exception;
 }
+
