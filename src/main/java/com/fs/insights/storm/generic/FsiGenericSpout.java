@@ -1,5 +1,9 @@
-package com.fs.insights.storm;
+package com.fs.insights.storm.generic;
 
+import com.fs.insights.storm.FsiKafkaConfig;
+import com.fs.insights.storm.IFsiComponent;
+import com.fs.insights.storm.IFsiRichSpout;
+import com.fs.insights.storm.kafka.FsiKafkaStringSpout;
 import org.apache.storm.spout.SpoutOutputCollector;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.OutputFieldsDeclarer;
@@ -9,23 +13,30 @@ import org.apache.storm.tuple.Fields;
 import java.lang.reflect.Constructor;
 import java.util.Map;
 
-public class FsiConfigurableSpout extends BaseRichSpout {
-    public FsiConfigurableSpout() {
-
+public class FsiGenericSpout extends BaseRichSpout implements IFsiComponent {
+    public FsiGenericSpout() {
     }
+
+    /**/
 
     private IFsiRichSpout mSpout;
 
+    /**/
+
     @Override
     public void open(Map conf, TopologyContext context, SpoutOutputCollector collector) {
-        String id = context.getThisComponentId();
+        String componentId = context.getThisComponentId();
+        //
+//        mConf = conf;
+//        mComponentId = componentId;
+        //
         try {
-            String className = FsiConfigUtils.getConfStringValue(conf, id, "className");
+            String className = FsiKafkaConfig.getConfStringValue(conf, componentId, "className");
             className = className == null ? FsiKafkaStringSpout.class.getCanonicalName() : className;
             Class<?> c1ass = Class.forName(className);
             //
             Constructor<?> constructor = c1ass.getConstructor(String.class, Map.class);
-            mSpout = (IFsiRichSpout) constructor.newInstance(id, conf);
+            mSpout = (IFsiRichSpout) constructor.newInstance(componentId, conf);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -50,10 +61,10 @@ public class FsiConfigurableSpout extends BaseRichSpout {
 
     @Override
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
-        if (mSpout != null) {
-            mSpout.declareOutputFields(declarer);
-        }
-        declarer.declare(new Fields("data"));
+//        if (mSpout != null) {
+//            mSpout.declareOutputFields(declarer);
+//        }
+        declarer.declare(new Fields(mOutputDataFieldName));
     }
 
     @Override
@@ -82,5 +93,28 @@ public class FsiConfigurableSpout extends BaseRichSpout {
         if (mSpout != null) {
             mSpout.fail(msgId);
         }
+    }
+
+    /**/
+
+//    private Map mConf;
+//    private String mComponentId;
+//
+//    @Override
+//    public Map getConf() {
+//        return mConf;
+//    }
+//
+//    @Override
+//    public String getComponentId() {
+//        return mComponentId;
+//    }
+
+    /**/
+
+    private String mOutputDataFieldName = FsiKafkaConfig.getOutputDataFieldName();
+
+    public String getOutputDataFieldName() {
+        return mOutputDataFieldName;
     }
 }

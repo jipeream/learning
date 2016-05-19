@@ -1,5 +1,7 @@
 package com.fs.insights.storm;
 
+import com.fs.insights.storm.generic.FsiGenericSink;
+import com.fs.insights.storm.generic.FsiGenericSpout;
 import org.apache.storm.Config;
 import org.apache.storm.LocalCluster;
 import org.apache.storm.StormSubmitter;
@@ -15,12 +17,12 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Map;
 
-public class FsiConfigurableTestTopology {
+public class FsiGenericTestTopology {
 
     // TODO Cambiar nombres de constantes
-    public static final String FsiTestTopology_NAME = "FsiConfigurableTestTopology";
-    public static final String FsiConfigurableSpout_ID = "FsiConfigurableSpout";
-    public static final String FsiConfigurableSink_ID = "FsiConfigurableSink";
+    public static final String FsiGenericTestTopology_NAME = "FsiGenericTestTopology";
+    public static final String FsiGenericSpout_ID = "FsiGenericSpout";
+    public static final String FsiGenericSink_ID = "FsiGenericSink";
 
     public static void main(String[] args) throws Exception {
         System.out.println("CLASSPATH :");
@@ -30,32 +32,36 @@ public class FsiConfigurableTestTopology {
             System.out.println(url.getFile());
         }
         //
-        FsiConfigurableSpout fsiConfigurableSpout = new FsiConfigurableSpout();
+        FsiGenericSpout fsiGenericSpout = new FsiGenericSpout();
         int numSpouts = 1;
         //
-        FsiConfigurableSink fsiConfigurableSink = new FsiConfigurableSink();
+        FsiGenericSink fsiGenericSink = new FsiGenericSink();
         //
         TopologyBuilder topologyBuilder = new TopologyBuilder();
-        SpoutDeclarer fsiConfigurableSpoutDeclarer = topologyBuilder.setSpout(FsiConfigurableSpout_ID, fsiConfigurableSpout, numSpouts);
-        BoltDeclarer fsiConfigurableSinkBoltDeclarer = topologyBuilder.setBolt(FsiConfigurableSink_ID, fsiConfigurableSink, 1).shuffleGrouping(FsiConfigurableSpout_ID);
+        SpoutDeclarer fsiGenericSpoutDeclarer = topologyBuilder.setSpout(FsiGenericSpout_ID, fsiGenericSpout, numSpouts);
+        BoltDeclarer fsiGenericSinkBoltDeclarer = topologyBuilder.setBolt(FsiGenericSink_ID, fsiGenericSink, 1).shuffleGrouping(FsiGenericSpout_ID);
         StormTopology stormTopology = topologyBuilder.createTopology();
 //        TridentTopology topology = new TridentTopology();
-//        Stream spoutStream = topology.newStream("kafka-stream", fsiConfigurableSpout);
+//        Stream spoutStream = topology.newStream("kafka-stream", fsiGenericSpout);
+        //
         boolean debug = args.length == 0;
         //
         Config conf = new Config();
-        FsiConfigUtils.readConfig(conf, "fsinsights.properties");
-        conf.setDebug(true);
         conf.setNumWorkers(1);
         conf.setNumAckers(1);
         conf.setMaxTaskParallelism(1);
         //
         if (debug) {
+            FsiKafkaConfig.readConfig(conf, "src/main/resources/FsiGenericTestTopology.properties");
+            conf.setDebug(true);
             LocalCluster cluster = new LocalCluster();
-            cluster.submitTopology(FsiTestTopology_NAME, conf, stormTopology);
+            cluster.submitTopology(FsiGenericTestTopology_NAME, conf, stormTopology);
+//            Thread.sleep(60000);
+//            cluster.shutdown();
         } else {
+            FsiKafkaConfig.readConfig(conf, args[0]);
             Map clusterConf = Utils.readStormConfig();
-            StormSubmitter.submitTopologyWithProgressBar(FsiTestTopology_NAME, conf, stormTopology);
+            StormSubmitter.submitTopologyWithProgressBar(FsiGenericTestTopology_NAME, conf, stormTopology);
             Nimbus.Client client = NimbusClient.getConfiguredClient(clusterConf).getClient();
         }
     }

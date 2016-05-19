@@ -1,0 +1,90 @@
+#inspirado en:
+#  https://sourcevirtues.com/
+#  https://github.com/qiozas/sentiment-analysis-storm/blob/master/src/test/resources/flux/topology_kafka.yaml
+
+name: "FsiGenericTestTopology"
+
+components:
+  - id: "stringScheme"
+    className: "org.apache.storm.kafka.StringScheme"
+
+  - id: "stringMultiScheme"
+    className: "org.apache.storm.spout.SchemeAsMultiScheme"
+    constructorArgs:
+      - ref: "stringScheme"
+
+  - id: "zkHosts"
+    className: "org.apache.storm.kafka.ZkHosts"
+    constructorArgs:
+      - "localhost:2181"
+
+  - id: "topicSelector"
+    className: "org.apache.storm.kafka.bolt.selector.DefaultTopicSelector"
+    constructorArgs:
+      - "testSinkTopic"
+
+  - id: "kafkaMapper"
+    className: "org.apache.storm.kafka.bolt.mapper.FieldNameBasedTupleToKafkaMapper"
+
+  - id: "kafkaProducerProps"
+    className: "java.util.Properties"
+    configMethods:
+      - name: "put"
+        args:
+          - "bootstrap.servers"
+          - "localhost:9092"
+      - name: "put"
+        args:
+          - "acks"
+          - "1"
+      - name: "put"
+        args:
+          - "key.serializer"
+          - "org.apache.kafka.common.serialization.StringSerializer"
+      - name: "put"
+        args:
+          - "value.serializer"
+          - "org.apache.kafka.common.serialization.StringSerializer"
+
+config:
+  topology.workers: 1
+
+spouts:
+  - id: "KafkaSpout"
+    className: "org.apache.storm.kafka.bolt.KafkaSpout"
+    parallelism: 1
+    constructorArgs:
+      ref:
+#  - id: "FsiKafkaStringSpout"
+#    className: "com.fs.insights.storm.kafka.FsiKafkaStringSpout"
+#    parallelism: 1
+#    constructorArgs:
+#      - "testSpoutTopic"
+
+bolts:
+#  - id: "FsiKafkaStringSink"
+#    className: "com.fs.insights.storm.kafka.FsiKafkaStringSink"
+#    parallelism: 1
+  - id: "KafkaBolt"
+    className: "org.apache.storm.kafka.bolt.KafkaBolt"
+    parallelism: 1
+    configMethods:
+      - name: "withProducerProperties"
+        args: [ref: "kafkaProducerProps"]
+      - name: "withTopicSelector"
+        args: [ref: "topicSelector"]
+      - name: "withTupleToKafkaMapper"
+        args: [ref: "kafkaMapper"]
+
+
+streams:
+  - name: "KafkaSpout --> KafkaBolt" # name isn't used (placeholder for logging, UI, etc.)
+    from: "KafkaSpout"
+    to: "KafkaBolt"
+    grouping:
+      type: LOCAL_OR_SHUFFLE
+#  - name: "FsiKafkaStringSpout --> FsiKafkaStringSink" # name isn't used (placeholder for logging, UI, etc.)
+#    from: "FsiKafkaStringSpout"
+#    to: "KafkaBolt" # "FsiKafkaStringSink"
+#    grouping:
+#      type: LOCAL_OR_SHUFFLE

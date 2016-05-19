@@ -1,0 +1,33 @@
+#inspirado en:
+#  https://sourcevirtues.com/
+#  https://github.com/qiozas/sentiment-analysis-storm/blob/master/src/test/resources/flux/topology_kafka.yaml
+
+name: "FsiGenericTestTopology"
+
+config:
+  topology.workers: 1
+
+spouts:
+  - id: "FsiKafkaStringSpout"
+    className: "com.fs.insights.storm.kafka.FsiKafkaStringSpout"
+    parallelism: 1
+    constructorArgs:
+      - "testSpoutTopic"
+
+bolts:
+  - id: "FsiKafkaStringSink"
+    className: "com.fs.insights.storm.kafka.FsiKafkaStringSink"
+    parallelism: 1
+  - id: "KafkaBolt"
+    className: "org.apache.storm.kafka.bolt.KafkaBolt"
+    parallelism: 1
+    constructorArgs:
+      - "testSinkTopic"
+
+
+streams:
+  - name: "FsiKafkaStringSpout --> FsiKafkaStringSink" # name isn't used (placeholder for logging, UI, etc.)
+    from: "FsiKafkaStringSpout"
+    to: "FsiKafkaStringSink"
+    grouping:
+      type: LOCAL_OR_SHUFFLE
