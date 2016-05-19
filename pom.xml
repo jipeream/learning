@@ -6,6 +6,7 @@
 
     <properties>
         <scala.version>2.11.8</scala.version>
+        <storm.version>1.0.0</storm.version>
     </properties>
 
     <groupId>com.fs.jperea</groupId>
@@ -195,11 +196,29 @@
 
         <!--storm-->
 
-        <!--<dependency>-->
-        <!--<groupId>org.apache.storm</groupId>-->
-        <!--<artifactId>storm-kafka</artifactId>-->
-        <!--<version>0.9.5</version>-->
-        <!--</dependency>-->
+        <dependency>
+            <groupId>org.apache.storm</groupId>
+            <artifactId>storm-core</artifactId>
+            <version>${storm.version}</version>
+            <!--
+              Use "provided" scope to keep storm out of the jar-with-dependencies
+              For IntelliJ dev, intellij will load properly.
+            -->
+            <scope>${provided.scope}</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.storm</groupId>
+            <artifactId>storm-core</artifactId>
+            <version>${storm.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.storm</groupId>
+            <artifactId>storm-kafka</artifactId>
+            <!--<version>${storm.version}</version>-->
+            <version>1.0.1</version>
+        </dependency>
 
         <!--flink-->
 

@@ -30,7 +30,7 @@ import org.xml.sax.InputSource;
 
 public class RssUtils {
     public static List<String> getAuthorList(SyndEntry syndEntry) {
-        HashMap<String, Object> authorMap = new HashMap<String, Object>();
+        HashMap<String, Object> authorMap = new HashMap<>();
         for (String author : syndEntry.getAuthor().split("/")) {
             if (JavaUtils.isNullOrEmpty(author = author.trim())) continue;
             authorMap.put(author, null);
