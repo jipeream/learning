@@ -1,10 +1,9 @@
 package com.fs.insights.storm.kafka;
 
-import com.fs.insights.storm.FsiKafkaConfig;
-import com.fs.insights.storm.IFsiRichSpout;
+import com.fs.insights.storm.FsiStormConfig;
+import com.fs.insights.storm.IFsiStormSource;
 import org.apache.storm.kafka.*;
 import org.apache.storm.spout.MultiScheme;
-import org.apache.storm.spout.SchemeAsMultiScheme;
 import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Values;
 
@@ -14,8 +13,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public class FsiKafkaStringSpout extends KafkaSpout implements IFsiRichSpout {
-    public FsiKafkaStringSpout(String componentId, Map conf) {
+public class FsiStormKafkaStringSource extends KafkaSpout implements IFsiStormSource {
+    public FsiStormKafkaStringSource(String componentId, Map conf) {
         super(createSpoutConfig(componentId, conf));
         //
 //        mConf = conf;
@@ -23,7 +22,22 @@ public class FsiKafkaStringSpout extends KafkaSpout implements IFsiRichSpout {
         //
     }
 
+    public FsiStormKafkaStringSource(String topicName) {
+        super(createSpoutConfig(topicName));
+        //
+//        mConf = conf;
+//        mComponentId = componentId;
+        //
+    }
+
+    /**/
+
     private static SpoutConfig createSpoutConfig(String componentId, Map conf) {
+        String topicName = FsiStormConfig.getKafkaTopicName(conf, componentId);
+        return createSpoutConfig(topicName);
+    }
+
+    private static SpoutConfig createSpoutConfig(String topicName) {
         // SpoutConfig Parameters
         // + hosts   Any implementation of the BrokerHosts interface, currently either ZkHosts or StaticHosts.
         // + topic   Name of the Kafka topic.
@@ -31,8 +45,7 @@ public class FsiKafkaStringSpout extends KafkaSpout implements IFsiRichSpout {
         // + id      Unique identifier for this spout.
 
         BrokerHosts hosts = new ZkHosts("localhost:2181");
-        String topicName = FsiKafkaConfig.getKafkaTopicName(conf, componentId);
-//        String zkRoot = "/" + FsiKafkaConfig.getKafkaZkRoot();
+//        String zkRoot = "/" + FsiStormConfig.getKafkaZkRoot();
         String zkRoot = "/" + topicName;
         String id = UUID.randomUUID().toString();
         SpoutConfig spoutConfig = new SpoutConfig(hosts , topicName, zkRoot, id);
@@ -46,7 +59,8 @@ public class FsiKafkaStringSpout extends KafkaSpout implements IFsiRichSpout {
 
             @Override
             public Fields getOutputFields() {
-                Fields fields = new Fields(FsiKafkaConfig.getOutputDataFieldName(conf, componentId));
+//                Fields fields = new Fields(FsiStormConfig.getOutputDataFieldName(conf, componentId));
+                Fields fields = new Fields(FsiStormConfig.getOutputDataFieldName());
                 return fields;
             }
         };

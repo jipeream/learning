@@ -1,35 +1,33 @@
 package com.fs.insights.storm.kafka;
 
-import com.fs.insights.storm.FsiKafkaConfig;
-import com.fs.insights.storm.IFsiRichSink;
+import com.fs.insights.storm.FsiStormConfig;
+import com.fs.insights.storm.IFsiStormSink;
 import org.apache.storm.kafka.bolt.KafkaBolt;
-import org.apache.storm.kafka.bolt.mapper.TupleToKafkaMapper;
+import org.apache.storm.kafka.bolt.mapper.FieldNameBasedTupleToKafkaMapper;
 import org.apache.storm.kafka.bolt.selector.DefaultTopicSelector;
-import org.apache.storm.task.OutputCollector;
-import org.apache.storm.task.TopologyContext;
-import org.apache.storm.tuple.Tuple;
 
 import java.util.Map;
 import java.util.Properties;
 
-public class FsiKafkaStringSink extends KafkaBolt<String, String> implements IFsiRichSink {
-    public FsiKafkaStringSink(String topicName) {
+public class FsiStormKafkaStringSink extends KafkaBolt<String, String> implements IFsiStormSink {
+    public FsiStormKafkaStringSink(String topicName) {
         super();
         //
         mTopicName = topicName;
-        mInputDataFieldName = FsiKafkaConfig.getInputDataFieldName();
+        mInputDataFieldName = FsiStormConfig.getInputDataFieldName();
         //
         init();
     }
 
-    public FsiKafkaStringSink(String componentId, Map conf) {
+    public FsiStormKafkaStringSink(String componentId, Map conf) {
         super();
         //
 //        mConf = conf;
 //        mComponentId = componentId;
         //
-        mTopicName = FsiKafkaConfig.getKafkaTopicName(conf, componentId);
-        mInputDataFieldName = FsiKafkaConfig.getInputDataFieldName(conf, componentId);
+        mTopicName = FsiStormConfig.getKafkaTopicName(conf, componentId);
+//        mInputDataFieldName = FsiStormConfig.getInputDataFieldName(conf, componentId);
+        mInputDataFieldName = FsiStormConfig.getInputDataFieldName();
         //
         init();
     }
@@ -37,17 +35,19 @@ public class FsiKafkaStringSink extends KafkaBolt<String, String> implements IFs
     private void init() {
         withTopicSelector(new DefaultTopicSelector(mTopicName));
         //
-        withTupleToKafkaMapper(new TupleToKafkaMapper<String, String>() {
-            @Override
-            public String getKeyFromTuple(Tuple tuple) {
-                return mTopicName;
-            }
-
-            @Override
-            public String getMessageFromTuple(Tuple tuple) {
-                return tuple.getStringByField(mInputDataFieldName);
-            }
-        });
+//        withTupleToKafkaMapper(new TupleToKafkaMapper<String, String>() {
+//            @Override
+//            public String getKeyFromTuple(Tuple tuple) {
+//                return null;
+//            }
+//
+//            @Override
+//            public String getMessageFromTuple(Tuple tuple) {
+//                return tuple.getStringByField(mInputDataFieldName);
+//            }
+//        });
+        //
+        withTupleToKafkaMapper(new FieldNameBasedTupleToKafkaMapper<>(null, mInputDataFieldName));
         //
         Properties producerProperties = new Properties();
         producerProperties.put("bootstrap.servers", "localhost:9092");

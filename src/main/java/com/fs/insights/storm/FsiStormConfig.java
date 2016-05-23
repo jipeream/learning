@@ -6,7 +6,7 @@ import java.io.InputStream;
 import java.util.Map;
 import java.util.Properties;
 
-public class FsiKafkaConfig {
+public class FsiStormConfig {
     public static String getConfStringValue(Map conf, String...keys) {
         String key = getConfKey(keys);
         String value = (String) conf.get(key);
@@ -28,7 +28,7 @@ public class FsiKafkaConfig {
     public static Map readConfig(Map conf, String fileName) {
         Properties properties = new Properties();
         try {
-            // InputStream inputStream = FsiKafkaConfig.class.getClassLoader().getResourceAsStream(fileName);
+            // InputStream inputStream = FsiStormConfig.class.getClassLoader().getResourceAsStream(fileName);
             InputStream inputStream = new FileInputStream(fileName);
             properties.load(inputStream);
         } catch (IOException e) {
@@ -52,15 +52,15 @@ public class FsiKafkaConfig {
         return topicName;
     }
 
-    public static String getInputDataFieldName(Map conf, String componentId) {
-        String dataFieldName = "#fsi#data";
-        return dataFieldName;
-    }
-
-    public static String getOutputDataFieldName(Map conf, String componentId) {
-        String dataFieldName = "#fsi#data";
-        return dataFieldName;
-    }
+//    public static String getInputDataFieldName(Map conf, String componentId) {
+//        String dataFieldName = "#fsi#data";
+//        return dataFieldName;
+//    }
+//
+//    public static String getOutputDataFieldName(Map conf, String componentId) {
+//        String dataFieldName = "#fsi#data";
+//        return dataFieldName;
+//    }
 
     public static String getInputDataFieldName() {
         String dataFieldName = "#fsi#data";
@@ -72,15 +72,15 @@ public class FsiKafkaConfig {
         return dataFieldName;
     }
 
-//    public static String getKafkaTopicName(IFsiComponent fsiComponent) {
+//    public static String getKafkaTopicName(IFsiStormComponent fsiComponent) {
 //        return getKafkaTopicName(fsiComponent.getConf(), fsiComponent.getComponentId());
 //    }
 //
-//    public static String getInputDataFieldName(IFsiComponent fsiComponent) {
+//    public static String getInputDataFieldName(IFsiStormComponent fsiComponent) {
 //        return getInputDataFieldName(fsiComponent.getConf(), fsiComponent.getComponentId());
 //    }
 //
-//    public static String getOutputDataFieldName(IFsiComponent fsiComponent) {
+//    public static String getOutputDataFieldName(IFsiStormComponent fsiComponent) {
 //        return getOutputDataFieldName(fsiComponent.getConf(), fsiComponent.getComponentId());
 //    }
 

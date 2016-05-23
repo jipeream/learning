@@ -2,32 +2,28 @@
 #  https://sourcevirtues.com/
 #  https://github.com/qiozas/sentiment-analysis-storm/blob/master/src/test/resources/flux/topology_kafka.yaml
 
-name: "FsiGenericTestTopology"
+name: "FsiStormGenericTestTopology"
 
 config:
   topology.workers: 1
 
 spouts:
-  - id: "FsiKafkaStringSpout"
-    className: "com.fs.insights.storm.kafka.FsiKafkaStringSpout"
+  - id: "FsiStormKafkaStringSource"
+    className: "com.fs.insights.storm.kafka.FsiStormKafkaStringSourceource"
     parallelism: 1
     constructorArgs:
-      - "testSpoutTopic"
+      - "testSourceTopic"
 
 bolts:
-  - id: "FsiKafkaStringSink"
-    className: "com.fs.insights.storm.kafka.FsiKafkaStringSink"
-    parallelism: 1
-  - id: "KafkaBolt"
-    className: "org.apache.storm.kafka.bolt.KafkaBolt"
+  - id: "FsiStormKafkaStringSink"
+    className: "com.fs.insights.storm.kafka.FsiStormKafkaStringSinkgSink"
     parallelism: 1
     constructorArgs:
       - "testSinkTopic"
 
-
 streams:
-  - name: "FsiKafkaStringSpout --> FsiKafkaStringSink" # name isn't used (placeholder for logging, UI, etc.)
-    from: "FsiKafkaStringSpout"
-    to: "FsiKafkaStringSink"
+  - name: "FsiStormKafkaStringSource --> FsiStormKafkaStringSink" # name isn't used (placeholder for logging, UI, etc.)
+    from: "FsiStormKafkaStringSource"
+    to: "FsiStormKafkaStringSink"
     grouping:
       type: LOCAL_OR_SHUFFLE

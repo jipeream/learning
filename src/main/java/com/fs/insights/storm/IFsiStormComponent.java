@@ -2,7 +2,7 @@ package com.fs.insights.storm;
 
 import java.util.Map;
 
-public interface IFsiComponent {
+public interface IFsiStormComponent {
 //    Map getConf();
 //    String getComponentId();
 }

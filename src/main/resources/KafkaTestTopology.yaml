@@ -1,8 +1,9 @@
 #inspirado en:
 #  https://sourcevirtues.com/
 #  https://github.com/qiozas/sentiment-analysis-storm/blob/master/src/test/resources/flux/topology_kafka.yaml
+#  https://github.com/apache/storm/blob/master/external/flux/flux-examples/src/main/resources/kafka_spout.yaml
 
-name: "FsiGenericTestTopology"
+name: "FsiStormGenericTestTopology"
 
 components:
   - id: "stringScheme"
@@ -17,6 +18,34 @@ components:
     className: "org.apache.storm.kafka.ZkHosts"
     constructorArgs:
       - "localhost:2181"
+
+# Alternative kafka config
+#  - id: "kafkaConfig"
+#    className: "org.apache.storm.kafka.KafkaConfig"
+#    constructorArgs:
+#      # brokerHosts
+#      - ref: "zkHosts"
+#      # topic
+#      - "myKafkaTopic"
+#      # clientId (optional)
+#      - "myKafkaClientId"
+
+  - id: "spoutConfig"
+    className: "org.apache.storm.kafka.SpoutConfig"
+    constructorArgs:
+      # brokerHosts
+      - ref: "zkHosts"
+      # topic
+      - "testSourceTopic"
+      # zkRoot
+      - "/kafkaSpout"
+      # id
+      - "928AD7F0"
+    properties:
+      - name: "ignoreZkOffsets"
+        value: true
+      - name: "scheme"
+        ref: "stringMultiScheme"
 
   - id: "topicSelector"
     className: "org.apache.storm.kafka.bolt.selector.DefaultTopicSelector"
@@ -54,16 +83,11 @@ spouts:
     className: "org.apache.storm.kafka.bolt.KafkaSpout"
     parallelism: 1
     constructorArgs:
-      ref:
-#  - id: "FsiKafkaStringSpout"
-#    className: "com.fs.insights.storm.kafka.FsiKafkaStringSpout"
-#    parallelism: 1
-#    constructorArgs:
-#      - "testSpoutTopic"
+      ref: "spoutConfig"
 
 bolts:
-#  - id: "FsiKafkaStringSink"
-#    className: "com.fs.insights.storm.kafka.FsiKafkaStringSink"
+#  - id: "FsiStormKafkaStringSink"
+#    className: "com.fs.insights.storm.kafka.FsiStormKafkaStringSinkgSink"
 #    parallelism: 1
   - id: "KafkaBolt"
     className: "org.apache.storm.kafka.bolt.KafkaBolt"
@@ -83,8 +107,8 @@ streams:
     to: "KafkaBolt"
     grouping:
       type: LOCAL_OR_SHUFFLE
-#  - name: "FsiKafkaStringSpout --> FsiKafkaStringSink" # name isn't used (placeholder for logging, UI, etc.)
-#    from: "FsiKafkaStringSpout"
-#    to: "KafkaBolt" # "FsiKafkaStringSink"
+#  - name: "FsiStormKafkaStringSource --> FsiStormKafkaStringSink" # name isn't used (placeholder for logging, UI, etc.)
+#    from: "FsiStormKafkaStringSource"
+#    to: "KafkaBolt" # "FsiStormKafkaStringSink"
 #    grouping:
 #      type: LOCAL_OR_SHUFFLE

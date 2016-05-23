@@ -16,15 +16,15 @@ kafka-server-start.bat ..\..\config\server.properties
 kafka-topics.bat --list --zookeeper localhost:2181
 
 # CREACIÓN TOPIC #
-kafka-topics.bat --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic testSpoutTopic
+kafka-topics.bat --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic testSourceTopic
 kafka-topics.bat --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic testSinkTopic
 
 # PRODUCTORES #
-kafka-console-producer.bat --broker-list localhost:9092 --topic testSpoutTopic
+kafka-console-producer.bat --broker-list localhost:9092 --topic testSourceTopic
 # kafka-console-producer.bat --broker-list localhost:9092 --topic testSinkTopic
 
 # CONSUMIDORES #
-# kafka-console-consumer.bat --zookeeper localhost:2181 --topic testSpoutTopic
+# kafka-console-consumer.bat --zookeeper localhost:2181 --topic testSourceTopic
 kafka-console-consumer.bat --zookeeper localhost:2181 --topic testSinkTopic
 
 ### STORM ###

@@ -1,9 +1,9 @@
 package com.fs.insights.storm.generic;
 
-import com.fs.insights.storm.FsiKafkaConfig;
-import com.fs.insights.storm.IFsiComponent;
-import com.fs.insights.storm.IFsiRichSink;
-import com.fs.insights.storm.kafka.FsiKafkaStringSpout;
+import com.fs.insights.storm.FsiStormConfig;
+import com.fs.insights.storm.IFsiStormComponent;
+import com.fs.insights.storm.IFsiStormSink;
+import com.fs.insights.storm.kafka.FsiStormKafkaStringSource;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.OutputFieldsDeclarer;
@@ -13,12 +13,12 @@ import org.apache.storm.tuple.Tuple;
 import java.lang.reflect.Constructor;
 import java.util.Map;
 
-public class FsiGenericSink extends BaseRichBolt implements IFsiComponent {
-    public FsiGenericSink() {
+public class FsiStormGenericSink extends BaseRichBolt implements IFsiStormComponent {
+    public FsiStormGenericSink() {
     }
     /**/
 
-    private IFsiRichSink mSink;
+    private IFsiStormSink mSink;
 
     /**/
 
@@ -30,12 +30,12 @@ public class FsiGenericSink extends BaseRichBolt implements IFsiComponent {
 //        mComponentId = componentId;
         //
         try {
-            String className = FsiKafkaConfig.getConfStringValue(conf, componentId, "className");
-            className = className == null ? FsiKafkaStringSpout.class.getCanonicalName() : className;
+            String className = FsiStormConfig.getConfStringValue(conf, componentId, "className");
+            className = className == null ? FsiStormKafkaStringSource.class.getCanonicalName() : className;
             Class<?> c1ass = Class.forName(className);
             //
             Constructor<?> constructor = c1ass.getConstructor(String.class, Map.class);
-            mSink = (IFsiRichSink) constructor.newInstance(componentId, conf);
+            mSink = (IFsiStormSink) constructor.newInstance(componentId, conf);
         } catch (Exception e) {
             e.printStackTrace();
         }

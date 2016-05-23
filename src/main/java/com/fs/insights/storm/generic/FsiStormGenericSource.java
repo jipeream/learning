@@ -1,9 +1,9 @@
 package com.fs.insights.storm.generic;
 
-import com.fs.insights.storm.FsiKafkaConfig;
-import com.fs.insights.storm.IFsiComponent;
-import com.fs.insights.storm.IFsiRichSpout;
-import com.fs.insights.storm.kafka.FsiKafkaStringSpout;
+import com.fs.insights.storm.FsiStormConfig;
+import com.fs.insights.storm.IFsiStormComponent;
+import com.fs.insights.storm.IFsiStormSource;
+import com.fs.insights.storm.kafka.FsiStormKafkaStringSource;
 import org.apache.storm.spout.SpoutOutputCollector;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.OutputFieldsDeclarer;
@@ -13,13 +13,13 @@ import org.apache.storm.tuple.Fields;
 import java.lang.reflect.Constructor;
 import java.util.Map;
 
-public class FsiGenericSpout extends BaseRichSpout implements IFsiComponent {
-    public FsiGenericSpout() {
+public class FsiStormGenericSource extends BaseRichSpout implements IFsiStormComponent {
+    public FsiStormGenericSource() {
     }
 
     /**/
 
-    private IFsiRichSpout mSpout;
+    private IFsiStormSource mSpout;
 
     /**/
 
@@ -31,12 +31,12 @@ public class FsiGenericSpout extends BaseRichSpout implements IFsiComponent {
 //        mComponentId = componentId;
         //
         try {
-            String className = FsiKafkaConfig.getConfStringValue(conf, componentId, "className");
-            className = className == null ? FsiKafkaStringSpout.class.getCanonicalName() : className;
+            String className = FsiStormConfig.getConfStringValue(conf, componentId, "className");
+            className = className == null ? FsiStormKafkaStringSource.class.getCanonicalName() : className;
             Class<?> c1ass = Class.forName(className);
             //
             Constructor<?> constructor = c1ass.getConstructor(String.class, Map.class);
-            mSpout = (IFsiRichSpout) constructor.newInstance(componentId, conf);
+            mSpout = (IFsiStormSource) constructor.newInstance(componentId, conf);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -112,7 +112,7 @@ public class FsiGenericSpout extends BaseRichSpout implements IFsiComponent {
 
     /**/
 
-    private String mOutputDataFieldName = FsiKafkaConfig.getOutputDataFieldName();
+    private String mOutputDataFieldName = FsiStormConfig.getOutputDataFieldName();
 
     public String getOutputDataFieldName() {
         return mOutputDataFieldName;
