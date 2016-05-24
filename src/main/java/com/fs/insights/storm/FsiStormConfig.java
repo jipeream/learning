@@ -46,11 +46,41 @@ public class FsiStormConfig {
         return conf;
     }
 
+    /**/
 
     public static String getKafkaTopicName(Map conf, String componentId) {
         String topicName = getConfStringValue(conf, componentId, "kafka", "topicName");
         return topicName;
     }
+
+    /**/
+
+    public static String getTwitterConsumerKey(Map conf, String componentId) {
+        String consumerKey = getConfStringValue(conf, componentId, "twitter", "oauth", "consumerKey");
+        return consumerKey;
+    }
+
+    public static String getTwitterConsumerSecret(Map conf, String componentId) {
+        String consumerSecret = getConfStringValue(conf, componentId, "twitter", "oauth", "consumerSecret");
+        return consumerSecret;
+    }
+
+    public static String getTwitterAccessToken(Map conf, String componentId) {
+        String accessToken = getConfStringValue(conf, componentId, "twitter", "oauth", "accessToken");
+        return accessToken;
+    }
+
+    public static String getTwitterAccessTokenSecret(Map conf, String componentId) {
+        String accessTokenSecret = getConfStringValue(conf, componentId, "twitter", "oauth", "accessTokenSecret");
+        return accessTokenSecret;
+    }
+
+    public static String[] getTwitterKeywords(Map conf, String componentId) {
+        String keywords = getConfStringValue(conf, componentId, "twitter", "keywords");
+        return keywords.split(",");
+    }
+
+    /**/
 
 //    public static String getInputDataFieldName(Map conf, String componentId) {
 //        String dataFieldName = "#fsi#data";
@@ -71,22 +101,5 @@ public class FsiStormConfig {
         String dataFieldName = "#fsi#data";
         return dataFieldName;
     }
-
-//    public static String getKafkaTopicName(IFsiStormComponent fsiComponent) {
-//        return getKafkaTopicName(fsiComponent.getConf(), fsiComponent.getComponentId());
-//    }
-//
-//    public static String getInputDataFieldName(IFsiStormComponent fsiComponent) {
-//        return getInputDataFieldName(fsiComponent.getConf(), fsiComponent.getComponentId());
-//    }
-//
-//    public static String getOutputDataFieldName(IFsiStormComponent fsiComponent) {
-//        return getOutputDataFieldName(fsiComponent.getConf(), fsiComponent.getComponentId());
-//    }
-
-//    public static String getKafkaZkRoot() {
-//        String zkRoot = "/" + "kafka-storm";
-//        return zkRoot;
-//    }
 
 }

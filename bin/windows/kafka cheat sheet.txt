@@ -1,9 +1,13 @@
+############################################################
+
 ### ZOOKEEPER ###
 
 cd C:\Programas\zookeeper-3.4.8\bin
 
 # ARRANQUE #
 zkServer.cmd
+
+############################################################
 
 ### KAFKA ###
 
@@ -27,5 +31,14 @@ kafka-console-producer.bat --broker-list localhost:9092 --topic testSourceTopic
 # kafka-console-consumer.bat --zookeeper localhost:2181 --topic testSourceTopic
 kafka-console-consumer.bat --zookeeper localhost:2181 --topic testSinkTopic
 
+############################################################
+
 ### STORM ###
 
+cd C:\Programas\apache-storm-1.0.1\bin
+
+# ARRANQUE #
+
+storm.cmd nimbus
+storm.cmd supervisor
+storm.cmd ui

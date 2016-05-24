@@ -20,9 +20,9 @@ import java.util.Map;
 public class FsiStormGenericTestTopology {
 
     // TODO Cambiar nombres de constantes
-    public static final String FsiStormGenericTestTopology_NAME = "FsiStormGenericTestTopology";
-    public static final String FsiStormGenericSource_ID = "FsiStormGenericSource";
-    public static final String FsiStormGenericSink_ID = "FsiStormGenericSink";
+    public static final String fsiStormGenericTestTopology_NAME = "fsiStormGenericTestTopology";
+    public static final String fsiStormGenericTestSource_ID = "fsiStormGenericTestSource";
+    public static final String fsiStormGenericTestSink_ID = "fsiStormGenericTestSink";
 
     public static void main(String[] args) throws Exception {
         System.out.println("CLASSPATH :");
@@ -32,14 +32,14 @@ public class FsiStormGenericTestTopology {
             System.out.println(url.getFile());
         }
         //
-        FsiStormGenericSource FsiStormGenericSource = new FsiStormGenericSource();
+        FsiStormGenericSource fsiStormGenericTestSource = new FsiStormGenericSource();
         int numSpouts = 1;
         //
-        FsiStormGenericSink FsiStormGenericSink = new FsiStormGenericSink();
+        FsiStormGenericSink fsiStormGenericTestSink = new FsiStormGenericSink();
         //
         TopologyBuilder topologyBuilder = new TopologyBuilder();
-        SpoutDeclarer FsiStormGenericSourceDeclarer = topologyBuilder.setSpout(FsiStormGenericSource_ID, FsiStormGenericSource, numSpouts);
-        BoltDeclarer FsiStormGenericSinkBoltDeclarer = topologyBuilder.setBolt(FsiStormGenericSink_ID, FsiStormGenericSink, 1).shuffleGrouping(FsiStormGenericSource_ID);
+        SpoutDeclarer FsiStormGenericSourceDeclarer = topologyBuilder.setSpout(fsiStormGenericTestSource_ID, fsiStormGenericTestSource, numSpouts);
+        BoltDeclarer FsiStormGenericSinkBoltDeclarer = topologyBuilder.setBolt(fsiStormGenericTestSink_ID, fsiStormGenericTestSink, 1).shuffleGrouping(fsiStormGenericTestSource_ID);
         StormTopology stormTopology = topologyBuilder.createTopology();
 //        TridentTopology topology = new TridentTopology();
 //        Stream spoutStream = topology.newStream("kafka-stream", FsiStormGenericSource);
@@ -52,17 +52,17 @@ public class FsiStormGenericTestTopology {
         conf.setMaxTaskParallelism(1);
         //
         if (debug) {
-            FsiStormConfig.readConfig(conf, "src/main/resources/FsiStormGenericTestTopology.properties");
+            FsiStormConfig.readConfig(conf, "src/main/resources/" + fsiStormGenericTestTopology_NAME + ".properties");
             conf.setDebug(true);
             //
             LocalCluster cluster = new LocalCluster();
-            cluster.submitTopology(FsiStormGenericTestTopology_NAME, conf, stormTopology);
+            cluster.submitTopology(fsiStormGenericTestTopology_NAME, conf, stormTopology);
 //            Thread.sleep(60000);
 //            cluster.shutdown();
         } else {
             FsiStormConfig.readConfig(conf, args[0]);
             Map clusterConf = Utils.readStormConfig();
-            StormSubmitter.submitTopologyWithProgressBar(FsiStormGenericTestTopology_NAME, conf, stormTopology);
+            StormSubmitter.submitTopologyWithProgressBar(fsiStormGenericTestTopology_NAME, conf, stormTopology);
             Nimbus.Client client = NimbusClient.getConfiguredClient(clusterConf).getClient();
         }
     }

@@ -107,8 +107,8 @@ streams:
     to: "KafkaBolt"
     grouping:
       type: LOCAL_OR_SHUFFLE
-#  - name: "FsiStormKafkaStringSource --> FsiStormKafkaStringSink" # name isn't used (placeholder for logging, UI, etc.)
-#    from: "FsiStormKafkaStringSource"
+#  - name: "FsiStormTwitterSource --> FsiStormKafkaStringSink" # name isn't used (placeholder for logging, UI, etc.)
+#    from: "FsiStormTwitterSource"
 #    to: "KafkaBolt" # "FsiStormKafkaStringSink"
 #    grouping:
 #      type: LOCAL_OR_SHUFFLE

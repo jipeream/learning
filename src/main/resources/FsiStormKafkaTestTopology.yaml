@@ -8,7 +8,7 @@ config:
   topology.workers: 1
 
 spouts:
-  - id: "FsiStormKafkaStringSource"
+  - id: "FsiStormTwitterSource"
     className: "com.fs.insights.storm.kafka.FsiStormKafkaStringSourceource"
     parallelism: 1
     constructorArgs:
@@ -22,8 +22,8 @@ bolts:
       - "testSinkTopic"
 
 streams:
-  - name: "FsiStormKafkaStringSource --> FsiStormKafkaStringSink" # name isn't used (placeholder for logging, UI, etc.)
-    from: "FsiStormKafkaStringSource"
+  - name: "FsiStormTwitterSource --> FsiStormKafkaStringSink" # name isn't used (placeholder for logging, UI, etc.)
+    from: "FsiStormTwitterSource"
     to: "FsiStormKafkaStringSink"
     grouping:
       type: LOCAL_OR_SHUFFLE
